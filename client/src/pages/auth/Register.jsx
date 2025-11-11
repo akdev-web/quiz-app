@@ -1,7 +1,5 @@
 
 import React, { useReducer, useState } from 'react'
-import GoogleSignin from '../../components/GoogleSign'
-import CharchaSign from '../../components/CharchaSign'
 import { auth } from '../../components/api'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
@@ -83,17 +81,17 @@ const Register = () => {
 
 
           <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2 transition-colors duration-300'
-            type="text" name="username" id="" placeholder='Enter your username'
+            type="text" name="username"  placeholder='Enter your username'
             value={form.username} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
 
           <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2  transition-colors duration-300'
-            type="email" name="email" id="" placeholder='Enter your Email'
+            type="email" name="email"  placeholder='Enter your Email'
             value={form.email} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
 
           <div className={`bg-[var(---color-input-bg)] w-full flex gap-2 items-center justify-between px-1.5 py-1  border-b-2  transition-colors duration-300
             ${passFocus ?'border-[var(---color-input-b-focus)]' : 'border-[var(---color-input-border)]'}`}>
             <input className='flex-1 outline-none focus:outline-0'
-              type={form.showpass ? 'text' : 'password'} name="password" id="" placeholder='Enter password'
+              type={form.showpass ? 'text' : 'password'} name="password"  placeholder='Enter password'
               onFocus={()=>{setPassFocus(true)}} onBlur={()=>{setPassFocus(false)}}
               value={form.password} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
   

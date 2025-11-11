@@ -1,11 +1,12 @@
 import nodemailer from 'nodemailer';
-
+import env from 'dotenv';
+env.config();
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-        user: process.env.SMTTP_MAIL_ADDRESS,
+        user: process.env.SMTP_MAIL_ADDRESS,
         pass: process.env.SMTP_PASS_KEY,
     },
 });
@@ -19,7 +20,7 @@ export default async function SendVeificationMail(sendto) {
    const  verfcode = code()
     try {
         const info = await transporter.sendMail({
-            from: '"Charcha" <akayoffk@gmail.com>',
+            from: '"QuizApp" <akayoffk@gmail.com>',
             to: sendto,
             subject: "Vefication Mail",
             text: "The code is valid for 5 min", // plain‑text body

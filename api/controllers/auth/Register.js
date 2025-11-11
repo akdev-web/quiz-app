@@ -12,7 +12,7 @@ export default async function Register(req,res) {
         if(!username || !email || !password){
             return res.status(400).json({err:'All Fields are required'});
         }
-        await connectDB();
+        
         const isExistingUser = await users.findOne({email}).select("username");
         if(isExistingUser){
             return res.status(400).json({err:'Email is already registered'});

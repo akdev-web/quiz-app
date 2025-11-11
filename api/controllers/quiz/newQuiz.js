@@ -9,7 +9,6 @@ export default async function newQuiz(req,res){
     new_.published = false; 
     
     try {
-        await connectDB();
 
         const id = nanoid(10);
         const createdBy = req.user.id;

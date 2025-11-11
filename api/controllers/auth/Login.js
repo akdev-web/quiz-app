@@ -11,7 +11,6 @@ export default async function Login(req,res) {
     }
 
     try {
-        await connectDB();
         const user = await users.findOne({email});
         if(!user){
             return res.status(401).json({err:'Email Not found or Not registered'});

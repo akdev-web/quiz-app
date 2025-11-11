@@ -2,7 +2,6 @@
 import express from 'express';
 import env from 'dotenv';
 env.config();
-import axios from 'axios';
 import authRoutes from './Routes/authRoutes.js'
 import userRoutes from './Routes/User/userRoutes.js'
 import quizRoutes from './Routes/Quiz/quizRoutes.js'
@@ -10,6 +9,7 @@ import quizSubmitRoutes from './Routes/Quiz/quizSubmitRoutes.js'
 import dashboardRoutes from './Routes/User/dashboardRoutes.js'
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import connectDB from './config/conn.js';
 
 
 
@@ -22,7 +22,14 @@ const corsOptions = {
     origin:'http://localhost:5173',
     credentials:true,
 }
+
 app.use(cors(corsOptions));
+
+connectDB().then(() => {
+  console.log('DB ready, starting server...');
+}).catch(err => {
+  return console.error('Failed to start server because DB not ready:', err);
+});
 
 app.use('/api/auth',authRoutes);
 app.use('/api/user',userRoutes);

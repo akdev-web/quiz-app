@@ -30,7 +30,6 @@ export default async function Verify(req, res) {
 
     try {
         const {email,context} = user_access;
-        await connectDB();
         const user = await users.findOne({ email }).select('-password');
 
         if (!user || !user.verfCode) {

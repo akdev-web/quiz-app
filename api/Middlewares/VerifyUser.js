@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import users from '../models/user.js';
+import connectDB from '../config/conn.js';
 
 
 export default async function VerifyUser(req,res,next) {

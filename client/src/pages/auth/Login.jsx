@@ -1,7 +1,5 @@
 
 import { useEffect, useReducer, useRef, useState } from 'react'
-import GoogleSignin from '../../components/GoogleSign'
-import CharchaSign from '../../components/CharchaSign'
 import { auth } from '../../components/api'
 import { Link, useLocation } from 'react-router-dom'
 import useUserContext from '../../context/UserContext'

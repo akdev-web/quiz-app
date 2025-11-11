@@ -26,8 +26,7 @@ export default async function ResetPass(req, res) {
     else {
         return res.status(400).json({ err: 'Request is expried . Try Again after some time !' });
     }
-
-    await connectDB();
+    
     const newPassword = await bcrypt.hash(password,10);
     const userdata = await users.findOneAndUpdate({email:user_access.email},{password:newPassword}, {new:true});
     res.status(200).json({success:true,msg:'pawword chaned successfully !'});

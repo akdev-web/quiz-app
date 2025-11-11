@@ -6,7 +6,6 @@ export default async function updateQuiz(req, res) {
 
     const Id  = req.quiz._id;
     try {
-        await connectDB();
 
         const quiz = await Quiz.findById(Id);
 

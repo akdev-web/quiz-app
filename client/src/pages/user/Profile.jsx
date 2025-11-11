@@ -4,6 +4,7 @@ import UserAvatar from '../../components/util/UserAvatar';
 import { Edit } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import ToastMsg from '../../components/util/AlertToast';
+import api from '../../components/api';
 
 const Profile = () => {
   const { user } = useUserContext();
@@ -27,7 +28,7 @@ const Profile = () => {
   const [username, setUsername] = useState(user?.username || '');
   const [usernameChanged, setUsernameChanged] = useState(false);
 
-  const handleEdit = () => setEditMode(true);
+
   const handleImgChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -47,14 +48,27 @@ const Profile = () => {
   };
   const handleSave = async () => {
     setLoading(true);
-    // TODO: Replace with actual upload logic for image and username
-    setTimeout(() => {
-      if (preview) setProfileImg(preview);
-      setEditMode(false);
+    if (preview) setProfileImg(preview);
+    try {
+      const formdata = new FormData();
+      formdata.append('profile', selectedImg);
+      formdata.append('username', username);
+      const res = await api.post('user/profile', formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res);
+      if (res.data.success) {
+        setEditMode(false);
+        setLoading(false);
+        setUsernameChanged(false);
+        setSelectedImg(null);
+      }
+    } catch (err) {
       setLoading(false);
-      setUsernameChanged(false);
-      setSelectedImg(null);
-    }, 1000);
+      console.log(err)
+    }
   };
 
 
