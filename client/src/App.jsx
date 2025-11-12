@@ -15,7 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import NotFound from './pages/NotFound';
 import CreateQuiz from './pages/quiz/CrateQuiz';
 import Quiz from './pages/quiz/Quiz';
-import Participate from './pages/quiz/participate';
+import Participate from './pages/quiz/Participate';
 import Result from './pages/quiz/Result';
 import Dashboard from './pages/user/Dashboard';
 import DashboardResult from './pages/quiz/DashboardResult';
