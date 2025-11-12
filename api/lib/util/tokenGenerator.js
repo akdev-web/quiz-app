@@ -28,7 +28,7 @@ const defaultCookieOptions = {
         httpOnly: true,
         path: '/',
         maxAge: 15 * 60 * 1000,
-        sameSite: 'lax',
+        sameSite:  process.env.NODE_ENV === 'PRODUCTION' ? 'none' : 'lax',
         secure: process.env.NODE_ENV === 'PRODUCTION',
 }
 export function cookiesOptions(overrides ={}) {
