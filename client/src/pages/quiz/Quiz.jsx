@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../components/api';
 import QuizCard from './components/QuizCard';
 import QuizForm from './components/QuizForm';
+import useUserContext from '../../context/UserContext';
+import Blockpopup from '../../components/Blockpopup';
 
 const Quiz = () => {
  
@@ -25,8 +27,11 @@ const Quiz = () => {
   }
 
   const [manage, manager] = useReducer(manageFunc, initialSate)
+  const [showPopup,setShowPopup]= useState(false);
+  const {Logout} = useUserContext();
   const [edit,setEdit] = useState(null);
   const [myQuiz,setMyquiz] = useState([])
+  const navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -39,7 +44,10 @@ const Quiz = () => {
         }
       } catch (err) {
         if(err.response?.data){
-          manager({type:'msg',value:{type:'err',msg:err.response.data.err}});
+          const errRes = err.response.data;
+          if(errRes.loggedout){
+            setShowPopup(true);
+          }
         }
         console.log(err);
       }
@@ -48,6 +56,12 @@ const Quiz = () => {
     get_quizes();
   },[])
 
+
+  if(showPopup){
+    return(
+      <Blockpopup onClose={()=>{navigate('/login'); Logout();}} />
+    )
+  }
  
 
   return (
