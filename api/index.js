@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-    origin:'http://localhost:5173',
+    origin:process.env.CLIENT_URL,
     credentials:true,
 }
 
@@ -40,6 +40,6 @@ app.use('/api/dashboard',dashboardRoutes);
 
 
 
-app.listen(3000, () => {
-    return console.log('Server running on port : 3000');
+app.listen(process.env.PORT, () => {
+    return console.log(`Server is listening on PORT : ${process.env.PORT}`);
 })

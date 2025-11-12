@@ -29,7 +29,7 @@ const defaultCookieOptions = {
         path: '/',
         maxAge: 15 * 60 * 1000,
         sameSite: 'lax',
-        secure: false,
+        secure: process.env.NODE_ENV === 'PRODUCTION',
 }
 export function cookiesOptions(overrides ={}) {
     return {

@@ -1,7 +1,9 @@
 import axios from "axios";
 const newRequestURl = (path) =>{
   if(!path){path=''}
-  return `http://localhost:3000/api/${path}`;
+  // return `http://localhost:3000/api/${path}`;
+  return `${import.meta.env.VITE_API_URL}/api/${path}`;
+
 }
 const api = axios.create({
     baseURL:newRequestURl(),
