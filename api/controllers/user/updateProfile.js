@@ -1,10 +1,8 @@
 import cloudinary from "../../config/cloudinary.js";
-import connectDB from "../../config/conn.js";
 import users from "../../models/user.js";
 export default async function updateProfile(req, res) {
     const { user } = req;
     const { profile, username } = req.body;
-    console.log(user, profile, username);
     try {
         const userdata = await users.findById(user.id);
         const oldProfile = userdata.profile;
@@ -23,7 +21,7 @@ export default async function updateProfile(req, res) {
             userdata.username = username;
         }
         await userdata.save();
-        const update = { profile: userdata.profile, username }
+        const update = { profile: profile.url, username }
         return res.status(200).json({ success: true, update })
     } catch (error) {
         console.log(error);

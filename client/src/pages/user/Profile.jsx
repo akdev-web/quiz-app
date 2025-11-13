@@ -7,7 +7,7 @@ import ToastMsg from '../../components/util/AlertToast';
 import api from '../../components/api';
 
 const Profile = () => {
-  const { user } = useUserContext();
+  const { user,setUser } = useUserContext();
   const location = useLocation();
   const loaded = useRef(false);
 
@@ -60,12 +60,17 @@ const Profile = () => {
       });
       console.log(res);
       if (res.data.success) {
+        const {update} = res.data;
+        setUser(prev=>({...prev,...update}))
+        ToastMsg({msg:'Profile updated successfully ',type:'success'})
         setEditMode(false);
         setLoading(false);
         setUsernameChanged(false);
         setSelectedImg(null);
       }
     } catch (err) {
+      const errRes = err.response?.data?.err || 'Unexpected error';
+      ToastMsg({msg:errRes,type:'err'})
       setLoading(false);
       console.log(err)
     }
