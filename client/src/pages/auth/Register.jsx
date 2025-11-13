@@ -57,7 +57,7 @@ const Register = () => {
   }
 
   return (
-    <div className='w-full sm:w-[400px]  px-4 py-10 mx-auto mt-[150px] bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] sm:rounded-2xl '
+    <div className='w-full sm:w-[400px]  px-4 py-10 mx-auto mt-4  bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] sm:rounded-2xl '
       style={{boxShadow: '0 4px 8px 2px  var(---color-shadow)'}}>
       <div className='flex flex-col items-center justify-center gap-3 '>
         <div className='w-full flex flex-col  gap-5'>
@@ -80,29 +80,36 @@ const Register = () => {
 
 
 
-          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2 transition-colors duration-300'
+          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2 disabled:cursor-not-allowed transition-colors duration-300'
             type="text" name="username"  placeholder='Enter your username'
-            value={form.username} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
+            value={form.username} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} 
+            disabled={connecting}  
+          />
 
-          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2  transition-colors duration-300'
+          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] px-1.5 py-1 outline-none focus:outline-0 border-b-2 disabled:cursor-not-allowed transition-colors duration-300'
             type="email" name="email"  placeholder='Enter your Email'
-            value={form.email} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
+            value={form.email} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} 
+            disabled={connecting}
+          />
 
-          <div className={`bg-[var(---color-input-bg)] w-full flex gap-2 items-center justify-between px-1.5 py-1  border-b-2  transition-colors duration-300
+          <div className={`bg-[var(---color-input-bg)] w-full flex gap-2 items-center justify-between px-1.5 py-1  border-b-2 disabled:cursor-not-allowed transition-colors duration-300
             ${passFocus ?'border-[var(---color-input-b-focus)]' : 'border-[var(---color-input-border)]'}`}>
             <input className='flex-1 outline-none focus:outline-0'
               type={form.showpass ? 'text' : 'password'} name="password"  placeholder='Enter password'
               onFocus={()=>{setPassFocus(true)}} onBlur={()=>{setPassFocus(false)}}
-              value={form.password} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
+              value={form.password} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} 
+              disabled={connecting}  
+            />
   
             <button className='text-lg '
               onClick={(e) => { manageForm({ type: 'show', value: !form.showpass }) }}>
               {form.showpass ? <EyeOff size={24} color='var(---color-text)'/> : <Eye  size={24} color='var(---color-text)' /> }
             </button>
           </div>
-          <div className='text-center text-sm text-[var(---color-link)] hover:text-[var(---color-link-hover)] underline cursor-pointer transition-colors duration-150'>
-              <Link to='/login'>Already Registered ? Login Here </Link>
-          </div>
+          <div className={`text-sm text-[var(---color-link)]  transition-colors duration-150 
+              ${connecting ? 'cursor-not-allowed' : 'underline hover:text-[var(---color-link-hover)] cursor-pointer'}`}>
+              { connecting ? <span> Register Here </span> : <Link to='/login'>Already Registered ? Login Here </Link> }
+            </div>
           <button className='mt-6 px-1.5 py-1 w-full rounded-lg cursor-pointer bg-black text-white text-xl disabled:cursor-not-allowed'
             disabled={connecting}
             type='click' onClick={handleForm}>{connecting ? 'Signing ....': 'Sign up'}</button>

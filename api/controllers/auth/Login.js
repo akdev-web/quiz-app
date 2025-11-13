@@ -57,7 +57,11 @@ export default async function Login(req,res) {
 
         const accessToken = await getAccessToken(user._id);
         const loginToken = await getLoggedInToken(user._id);
-        const useraccess = getUserJwtToken({email:user.email,username:user.username});
+        let userdata = {email:user.email,username:user.username};
+        if(user.profile?.url){
+            userdata = {...userdata,profile:user.profile.url};
+        }
+        const useraccess = getUserJwtToken(userdata);
 
         res.cookie('ACCESS',loginToken,cookiesOptions({maxAge:1000*60*60*24*30}));
         res.cookie('REFRESH',accessToken,cookiesOptions());

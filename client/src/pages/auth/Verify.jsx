@@ -88,7 +88,7 @@ const Verify = () => {
   };
 
   const renderRedirectMessage = (msg) => (
-    <div className="bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] w-full sm:w-[400px] p-4  mx-auto mt-[150px] sm:rounded-2xl"
+    <div className="bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] w-full sm:w-[400px] p-4  mx-auto mt-4 sm:rounded-2xl"
       style={{boxShadow: '0 4px 8px 2px  var(---color-shadow)'}}>
       <div className="flex flex-col items-center gap-3">
         <h2 className="text-3xl font-bold text-center">{msg && msg.h}</h2>
@@ -119,11 +119,12 @@ const Verify = () => {
         {renderMessage()}
 
         <input
-          className="bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] w-full px-2 py-1 mt-4 border-b-2 outline-none transition"
+          className="bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] w-full px-2 py-1 mt-4 border-b-2 disabled:cursor-not-allowed  outline-none transition"
           type="text"
           name="code"
           placeholder="Enter verification code"
           value={code}
+          disabled={state.requesting}
           onChange={e => setCode(e.target.value)}
         />
         <div className="flex justify-end text-sm mt-1 text-[var(---color-text-light)]">
@@ -136,6 +137,7 @@ const Verify = () => {
              <button
               className="underline text-[var(---color-link)]  hover:text-[var(---color-link-hover)]"
               type="button"
+              disabled={state.requesting}
               onClick={sendRequest}
             >
               Resend Email?

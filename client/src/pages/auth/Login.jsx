@@ -44,26 +44,32 @@ const Login = () => {
 
   const handleForm = async () => {
     setConnecting(true);
+    let wakingUP = setTimeout(()=>{
+      setMessage({ type: 'err', msg: 'Hold on tight. Server takiing too long to respond !' });  
+    },2000);
     try {
       const res = await auth.post('/login', form);
       if (res.data.success) {
+        if(wakingUP) clearTimeout(wakingUP);
         let data = res.data;
         setMessage({ type: 'ok', msg: data.msg })
         setConnecting(false);
         manageForm({ type: 'reset' });
         const payload = jwtDecode(data.access);
-        Login(payload.user,data.access);
+        Login(payload.user,data.access);    
       }
     } catch (error) {
+      if(wakingUP) clearTimeout(wakingUP);
       let res = error.response.data || 'Server Error';
       if (res.forceVerify) { setRequestverify(true) }
       setMessage({ type: 'err', msg: res.err });
       setConnecting(false);
+      
     }
   }
 
   return (
-    <div className='w-full sm:w-[400px]  px-4 py-10 mx-auto mt-[150px] bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)]  sm:rounded-2xl 
+    <div className='w-full sm:w-[400px]  px-4 py-10 mx-auto mt-4 bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)]  sm:rounded-2xl 
        ' style={{boxShadow: '0 4px 8px 2px  var(---color-shadow)'}}>
       <div className='flex flex-col items-center justify-center gap-3 '>
         <form className='w-full flex flex-col  gap-5' onSubmit={(e) => { e.preventDefault(); handleForm() }}>
@@ -81,18 +87,22 @@ const Login = () => {
             <p className='px-4 py-2 bg-green-200 text-green-800  text-sm'>{message.msg}</p>
           }
 
-          <input className='px-1.5 py-1  outline-none focus:outline-0 border-b-2  bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] transition-colors duration-300'
+          <input className='px-1.5 py-1  outline-none focus:outline-0 border-b-2  bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] disabled:cursor-not-allowed transition-colors duration-300'
             type="email" name="email"  placeholder='Enter your Email'
-            value={form.email} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
+            value={form.email} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} 
+            disabled={connecting}  
+          />
          
            
           
           <div className={`bg-[var(---color-input-bg)]  w-full flex gap-2 items-center justify-between px-1.5 py-1  border-b-2  transition-colors duration-300
               ${passFocus ? 'border-[var(---color-input-b-focus)]' : 'border-[var(---color-input-border)]'}`}>
-            <input className='flex-1 outline-none focus:outline-0 placeholder-[var(---color-placeholder)]'
+            <input className='flex-1 outline-none focus:outline-0 placeholder-[var(---color-placeholder)] disabled:cursor-not-allowed'
               type={form.showpass ? 'text' : 'password'} name="password"  placeholder='Enter password'
               onFocus={() => { setPassFocus(true) }} onBlur={() => { setPassFocus(false) }}
-              value={form.password} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} />
+              value={form.password} onChange={(e) => { manageForm({ type: 'setField', name: e.target.name, value: e.target.value }) }} 
+               disabled={connecting}   
+            />
 
             <button className='text-lg ' type='button'
               onClick={(e) => { manageForm({ type: 'show', value: !form.showpass }) }}>
@@ -100,11 +110,13 @@ const Login = () => {
             </button>
           </div>
           <div className='mt-5 flex flex-col gap-2'>
-            <div className='text-center text-sm text-[var(---color-link)] underline hover:text-[var(---color-link-hover)] cursor-pointer transition-colors duration-150'>
-              <Link  to='/request-reset'>Forgot Password</Link>
+            <div className={`text-sm text-[var(---color-link)]  transition-colors duration-150 
+              ${connecting ? 'cursor-not-allowed' : 'underline hover:text-[var(---color-link-hover)] cursor-pointer'}`}>
+              { connecting ? <span> Forgot Password </span> : <Link  to='/request-reset'>Forgot Password</Link> }
             </div>
-            <div className='text-center text-md text-[var(---color-link)] underline hover:text-[var(---color-link-hover)] cursor-pointer transition-colors duration-150'>
-                <Link  to='/register'>New User ? Register Here</Link>
+            <div className={`text-sm text-[var(---color-link)]  transition-colors duration-150 
+              ${connecting ? 'cursor-not-allowed' : 'underline hover:text-[var(---color-link-hover)] cursor-pointer'}`}>
+              { connecting ? <span> Register Here </span> :  <Link  to='/register'>New User ? Register Here</Link> }
             </div>
           </div>
           <button className='mt-6 px-1.5 py-1 w-full rounded-lg cursor-pointer bg-black text-white text-xl disabled:cursor-not-allowed'

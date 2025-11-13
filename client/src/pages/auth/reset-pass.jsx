@@ -41,22 +41,25 @@ const Reset = () => {
 
   const handleSubmit = async(e) => {
     dispatch({ type: 'msg', value: null });
+    dispatch({ type: 'req', value: true });
     e.preventDefault();
     try {
       const res = await auth.post('/reset-pass',body);
       if(res.data.success){
         dispatch({ type: 'msg', value: { type: 'ok', msg: res.data.msg } });
+        dispatch({ type: 'req', value: false });
       }
     } catch (error) {
       if (error.response) {
         let errResponse = error.response?.data?.err || 'Server Error';
         dispatch({ type: 'msg', value: { type: 'err', msg: errResponse } });
+        dispatch({ type: 'req', value: false }); 
       }
       console.log(error);
     }
   }
   return (
-    <div className="bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] w-full sm:w-[400px] px-4 py-10 mx-auto mt-[150px] sm:rounded-2xl"
+    <div className="bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] w-full sm:w-[400px] px-4 py-10 mx-auto mt-4 sm:rounded-2xl"
       style={{boxShadow: '0 4px 8px 2px  var(---color-shadow)'}}>
       <form className="flex flex-col items-center gap-3" onSubmit={handleSubmit}>
         <h2 className="text-3xl font-bold text-center">Reset Your Password</h2>
@@ -65,8 +68,9 @@ const Reset = () => {
           {state.message && AlertMessage(state.message)}
         </p>
         <input className={`bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] w-full px-1.5 py-1 border-b-2 outline-0  transition-colors duration-300
-           `}
+           disabled:cursor-not-allowed `}
           type='password' name="password"  placeholder='Enter password'
+          disabled={state.requesting}
           value={body.password} onChange={(e) => { setBody(prev => ({ ...prev, [e.target.name]: e.target.value })) }} />
 
         <div className={`w-full  flex gap-2 items-center justify-between px-1.5 py-1  border-b-2  transition-colors duration-300
@@ -78,8 +82,9 @@ const Reset = () => {
                 passFocus ? 'border-[var(---color-input-b-focus)]' : 'border-[var(---color-input-border)]'
               }
               `}>
-          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] flex-1 outline-none focus:outline-0'
+          <input className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] flex-1 outline-none focus:outline-0 disabled:cursor-not-allowed '
             type={state.showpass ? 'text' : 'password'} name="confirm"  placeholder='Confirm password'
+            disabled={state.requesting}
             onFocus={() => { setPassFocus(true) }} onBlur={() => { setPassFocus(false) }}
             value={body.confirm} onChange={(e) => { setBody(prev => ({ ...prev, [e.target.name]: e.target.value })) }} />
 
@@ -90,7 +95,8 @@ const Reset = () => {
         </div>
         <button
           type='submit'
-          className="mt-6 w-full px-1.5 py-2 rounded-lg bg-black text-lg text-white text-center block hover:bg-gray-900 transition"
+          disabled={state.requesting}
+          className="mt-6 w-full px-1.5 py-2 rounded-lg bg-black text-lg text-white text-center block hover:bg-gray-900 transition disabled:cursor-not-allowed "
         >
           Reset
         </button>

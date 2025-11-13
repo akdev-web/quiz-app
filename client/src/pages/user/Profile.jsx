@@ -19,7 +19,7 @@ const Profile = () => {
     }
   }, [])
 
-  const [profileImg, setProfileImg] = useState(user?.profileImg || null);
+  const [profileImg, setProfileImg] = useState(user?.profile || null);
   const [editMode, setEditMode] = useState(false);
   const [usernameEditMode, setUsernameEditMode] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);

@@ -10,9 +10,15 @@ function getBackgroundColor(name) {
   return colors[index];
 }
 
-export default function UserAvatar({ name = '?', size = 40, className = '' }) {
+export default function UserAvatar({ name = '?', size = 40, className = '',profile=null }) {
   const letter = name[0]?.toUpperCase() || '?';
   const bgColor = getBackgroundColor(name);
+
+  if(profile){
+    return(
+      <img className="rounded-full object-cover" src={profile} alt="" style={{width:size,height:size}} />
+    )
+  }
 
   return (
     <svg

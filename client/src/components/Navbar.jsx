@@ -27,7 +27,9 @@ const Navbar = () => {
   return (
     <nav className='sticky top-0 w-full py-2 px-4 flex justify-between items-center bg-[var(---color-nav-bg)] text-[var(---color-text)] 
                     transition-shadow duration-300 shadow-md dark:shadow-lg shadow-gray-200 dark:shadow-black'>
-        <div>Logo</div>
+        <div className='w-8'> 
+            <img src="/quizm.png" alt="logo" className='w-full'/>
+        </div>
         <div className='flex items-center gap-4 justify-end'>
             {
                 user && 
@@ -49,7 +51,7 @@ const Navbar = () => {
                         <House  size={28}/>
                     </div>
                     <div onClick={() => setShowuUserOpt(prev=>!prev)}>
-                        <UserAvatar  className='cursor-pointer' name={user.username} size={32}/>
+                        <UserAvatar  className='cursor-pointer' profile={user.profile} name={user.username} size={32}/>
                     </div>
                     <div
                         ref={overlayRef}
@@ -57,7 +59,7 @@ const Navbar = () => {
                         aria-disabled={!showUserOpt}
                     >
                         <div className='flex gap-2.5 justify-start items-center cursor-pointer' onClick={()=> navigate('/user')}>
-                            <UserAvatar  name={user.username} size={48}/>
+                            <UserAvatar profile={user.profile}  name={user.username} size={48}/>
                             <div className='flex flex-col justify-start'>
                                 <h4 className='text-lg'>{user.username}</h4>
                                 <span className='block text-sm text-gray-500'>view profile</span>

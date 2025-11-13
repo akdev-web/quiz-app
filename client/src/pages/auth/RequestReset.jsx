@@ -44,7 +44,7 @@ const RequestReset = () => {
   };
 
   return (
-    <div className="w-full sm:w-[400px] px-4 py-10 mx-auto  mt-[150px] bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] sm:rounded-2xl"
+    <div className="w-full sm:w-[400px] px-4 py-10 mx-auto mt-4  bg-linear-[0deg,#d7dde4,transparent_50%] dark:bg-linear-[0deg,black,#2d2c2c] text-[var(---color-text)] sm:rounded-2xl"
       style={{boxShadow: '0 4px 8px 2px  var(---color-shadow)'}}>
       <form className="flex flex-col items-center gap-3"
             onSubmit={sendRequest}>
@@ -54,12 +54,13 @@ const RequestReset = () => {
             :
             <p className='px-4 py-2 text-center text-md text-[var(---color-text-light)]'>Enter your email to request a password reset code.</p>}
             <input
-            className="'bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] w-full px-2 py-1 mt-4 border-b-2  outline-none transition"
+            className='bg-[var(---color-input-bg)] placeholder-[var(---color-placeholder)] border-[var(---color-input-border)] focus:border-[var(---color-input-b-focus)] w-full px-2 py-1 mt-4 border-b-2 disabled:cursor-not-allowed outline-none transition'
             type="email"
             name="email"
             placeholder="Enter your email"
             value={email.email}
             onChange={e => setEmail(prev=>({...prev,email:e.target.value}))}
+            disabled={state.connecting}
             />
             <button
             type='submit'
