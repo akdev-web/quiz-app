@@ -7,7 +7,6 @@ export const UserProvider = ({children}) =>{
     const [user,setUser] = useState(null);
     const [authenticating ,setauthenticating] = useState(true)
 
-    console.log(user);
     useEffect(()=>{
         const getUser = async() =>{
             setauthenticating(true)

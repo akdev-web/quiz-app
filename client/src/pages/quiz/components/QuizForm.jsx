@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState, useReducer } from 'react'
 import { IoMdAdd } from 'react-icons/io';
 import { MdClose } from 'react-icons/md';
@@ -6,10 +6,32 @@ import { RiResetLeftFill } from 'react-icons/ri';
 import PublishInput from './PublishInput';
 import api from '../../../components/api';
 import { useNavigate } from 'react-router-dom';
+import ToastMsg from '../../../components/util/AlertToast';
 
-const QuizForm = ({ manage, manager, edit,setEdit }) => {
+const QuizForm = ({edit, setEdit }) => {
 
     const navigate = useNavigate();
+    const initialSate = {
+        isActive: false,
+        message: null
+    }
+
+    const formStateReducer = (state, action) => {
+        switch (action.field) {
+            case 'req' :
+                return { ...state,requesting:action.value}
+            case 'active':
+                return { ...state, isActive: action.value };
+            case 'msg':
+                return { ...state, message: action.value };
+            default:
+                return state;
+        }
+
+    }
+
+    const [formState, dispatchFormState] = useReducer(formStateReducer, initialSate)
+    const quizFormRef = useRef(null);
     const initQuiz = {
         title: '',
         description: '',
@@ -18,11 +40,11 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
         schedule: false,
     }
 
-    
-    const [thumbnailFile, setThumbnailFile] = useState(null);
 
+    const [thumbnailFile, setThumbnailFile] = useState(null);
+    const thumbnailInputRef = useRef(null)
     const [thumbnailPreview, setThumbnailPreview] = useState('');
-    const [publishNow,setPublishNow] = useState('private' );
+    const [publishNow, setPublishNow] = useState('private');
     const [showUpdateAlert, setShowUpdateAlert] = useState(false);
 
     const quizManager = (state, field) => {
@@ -50,11 +72,15 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
         setQuizDetails({ type: 'reset' });
         setIsCustomTIme(false);
         setCustomTime({ min: 0, sec: 0 })
+        setThumbnailPreview('')
+        setThumbnailFile(null)
+        if(thumbnailInputRef.current) thumbnailInputRef.current.value = null;
     }
 
     useEffect(() => {
         if (!edit) return;
-        manager({field:'create',value:true})
+        if(quizFormRef.current)  quizFormRef.current?.scrollIntoView({ behavior: "instant"});
+        dispatchFormState({ field: 'active', value: true })
         setPublishNow(edit.published ? 'schedule' : 'private')
         for (const [k, v] of Object.entries(edit)) {
             setQuizDetails({ type: 'set', name: k, value: v });
@@ -78,6 +104,7 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
 
     // Remove thumbnail
     const handleRemoveThumbnail = () => {
+        if (thumbnailInputRef) thumbnailInputRef.current.value = null;
         setThumbnailFile(null);
         setThumbnailPreview('');
     };
@@ -85,14 +112,14 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
 
     const quizValidator = () => {
         if (quizDetails.title.length < 10) {
-            manager({ field: 'msg', value: { type: 'err', msg: 'Tittle is too short or empty !' } });
+            dispatchFormState({ field: 'msg', value: { type: 'err', msg: 'Tittle is too short or empty !' } });
             return false;
         } else if (quizDetails.description < 10) {
-            manager({ field: 'msg', value: { type: 'err', msg: 'Description is too short or empty !' } });
+            dispatchFormState({ field: 'msg', value: { type: 'err', msg: 'Description is too short or empty !' } });
             return false;
         } else if (quizDetails.timer.avail) {
             if (0 < quizDetails.timer.duration > 3600) {
-                manager({ field: 'msg', value: { type: 'err', msg: 'Quiz duration is invalid or exceed max limit !' } });
+                dispatchFormState({ field: 'msg', value: { type: 'err', msg: 'Quiz duration is invalid or exceed max limit !' } });
                 return false;
             }
         }
@@ -101,10 +128,12 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
 
     const handleCreateQuiz = async (e) => {
         e.preventDefault();
-        manager({field:'msg',value:null})
+        dispatchFormState({ field: 'msg', value: null })
         if (quizValidator()) {
             try {
-                manager({ field: 'msg', value: { type: 'ok', msg: 'creating  ....' } })
+                dispatchFormState({field:'req',value:true})
+                dispatchFormState({ field: 'msg', value: { type: 'ok', msg: 'creating  ....' } })
+                
                 // Prepare FormData for file upload
                 const formData = new FormData();
                 formData.append("title", quizDetails.title);
@@ -121,21 +150,24 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+                dispatchFormState({field:'req',value:false})
                 const data = res.data;
                 if (!data.success) throw new Error(data.message || "Failed to create quiz");
-                navigate('/quiz/create', { replace: true, state: res.data.data, alert:{ type: 'ok', msg: data.msg } });
+                navigate('/quiz/create', { replace: true, state: res.data.data, alert: { type: 'ok', msg: data.msg } });
+                ToastMsg({ msg: data.msg, type: 'success' });
 
             } catch (error) {
-                console.log(error);
+                dispatchFormState({field:'req',value:false})
                 let err = error.message || error.response?.data;
-                manager({ field: 'msg', value: { type: 'err', msg: err.err || 'Server Error' } });
+                dispatchFormState({ field: 'msg', value: { type: 'err', msg: err.err || 'Server Error' } });
+                ToastMsg({ msg: err.err || 'Server Error', type: 'err' })
             }
         }
     }
 
     const handleUpdateQuiz = async (e) => {
         e.preventDefault();
-        manager({field:'msg',value:null})
+        
         if (!showUpdateAlert) {
             // Show alert box before proceeding
             const confirmUpdate = window.confirm(
@@ -144,9 +176,11 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
             if (!confirmUpdate) return;
             setShowUpdateAlert(true);
         }
-        if(quizValidator()){
+        dispatchFormState({ field: 'msg', value: null })
+        if (quizValidator()) {
             try {
-                manager({field:'msg',value:{type:'ok',msg:'updating  ....'}})
+                dispatchFormState({ field: 'msg', value: { type: 'ok', msg: 'updating  ....' } })
+                dispatchFormState({field:'req',value:true})
                 // Prepare FormData for file upload
                 const formData = new FormData();
                 formData.append("title", quizDetails.title);
@@ -154,7 +188,7 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                 formData.append("duration", quizDetails.timer.duration);
                 formData.append("category", quizDetails.category);
                 formData.append("publish", publishNow);
-                formData.append('schedule',quizDetails.schedule);
+                formData.append('schedule', quizDetails.schedule);
                 if (thumbnailFile) {
                     formData.append("thumbnail", thumbnailFile);
                 }
@@ -164,32 +198,35 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+                dispatchFormState({field:'req',value:false})
                 const data = response.data;
                 if (!data.success) throw new Error(data.message || "Failed to update quiz");
-                manager({field:'msg',value:{type:'ok',msg:data.msg}});
+                ToastMsg({ msg: data.msg, type: "ok" })
+                dispatchFormState({ field: 'msg', value: { type: 'ok', msg: data.msg } });
                 setEdit(data.data);
             } catch (error) {
-                console.log(error);
+                dispatchFormState({field:'req',value:false})
                 const err = error.response?.data;
-                manager({field:'msg',value:{type:'err',msg:err.err || 'Server Error'}});
-                console.log(error);
+                dispatchFormState({ field: 'msg', value: { type: 'err', msg: err.err || 'Server Error' } });
+                ToastMsg({ msg: err.err || 'Server Error', type: 'err' })
             }
         }
     }
 
     return (
-        <form className='w-full px-4 py-8 max-w-[800px] mx-auto bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'
-            onSubmit={ edit ? handleUpdateQuiz : handleCreateQuiz }>
+        <form ref={quizFormRef} className='w-full px-4 py-8 max-w-[800px] mx-auto bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'
+            onSubmit={edit ? handleUpdateQuiz : handleCreateQuiz}>
             <div className=' w-full   flex gap-2.5 items-center justify-between'>
                 {edit ?
                     <>
                         <h3 className='text-2xl font-bold'>Updating Quiz</h3>
                     </> :
                     <h3 className='text-2xl font-bold'>Create A Quiz</h3>}
-                {!manage.createNew ?
-                    <button type="button" className=' px-4 py-2 flex gap-2 justify-center items-center rounded-full bg-black text-white'
+                {!formState.isActive ?
+                    <button type="button" className='px-4 py-2 flex gap-2 justify-center items-center rounded-full bg-black text-white'
                         onClick={() => {
-                            manager({ field: 'create', value: true })
+                            dispatchFormState({ field: 'active', value: true })
+                            dispatchFormState({ field:'msg', value:null})
                         }}>
                         <IoMdAdd size={24} color='white' />
                         {edit ? 'Update' : 'Create'}
@@ -198,10 +235,11 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                     (
                         <button type="button" className=' px-4 py-2 flex gap-2 justify-center items-center rounded-full bg-black text-white'
                             onClick={() => {
-                                manager({ field: 'create', value: false })
+                                dispatchFormState({ field: 'active', value: false })
+                                dispatchFormState({ field:'msg', value:null})
                                 ResetQuiz();
-                                setEdit && setEdit(null); 
-                            } }>
+                                setEdit && setEdit(null);
+                            }}>
                             <MdClose size={24} color='white' />
                             Cancel
                         </button>
@@ -210,16 +248,16 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                 }
             </div>
             <div className='my-2 border-b-4 border-[var(---color-border)]'></div>
-            {manage.createNew &&
+            {formState.isActive &&
                 <>
 
                     <div className='mt-5 flex flex-col gap-4'>
-                        {manage.message &&
+                        {formState.message &&
                             (
-                                manage.message.type === 'err' ?
-                                    <p className='my-2 px-2 py-1 text-sm text-[var(--color-error-text)] bg-[var(--color-error-bg)]'>{manage.message.msg}</p>
+                                formState.message.type === 'err' ?
+                                    <p className='my-2 px-2 py-1 text-sm text-[var(--color-error-text)] bg-[var(--color-error-bg)]'>{formState.message.msg}</p>
                                     :
-                                    <p className='my-2 px-2 py-1 text-sm text-[var(--color-success-text)] bg-[var(--color-success-bg)]'>{manage.message.msg}</p>
+                                    <p className='my-2 px-2 py-1 text-sm text-[var(--color-success-text)] bg-[var(--color-success-bg)]'>{formState.message.msg}</p>
                             )
                         }
 
@@ -231,12 +269,12 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                                 <label htmlFor="thumbnail-upload" className="inline-block px-4 py-2 rounded-full bg-[var(---color-bg-light)] text-[var(---color-text)] font-semibold cursor-pointer border border-[var(---color-input-border)] hover:bg-[var(---color-bg)] transition">
                                     {thumbnailPreview ? 'Change Thumbnail' : 'Choose Thumbnail'}
                                 </label>
-                                <input
+                                <input ref={thumbnailInputRef}
                                     id="thumbnail-upload"
                                     type="file"
                                     accept="image/*"
                                     onChange={handleThumbnailChange}
-                                    disabled={!manage.createNew}
+                                    disabled={!formState.isActive}
                                     className="hidden"
                                 />
                                 {thumbnailPreview && (
@@ -253,17 +291,26 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                         </div>
 
                         <input className='px-2 py-1 rounded-md border-2 border-[var(---color-input-border)] focus:outline-0 focus:border-[var(---color-input-b-focus)]'
-                            type="text" name="title" placeholder='Title For Your Quiz' value={quizDetails.title} onChange={setFields} disabled={!manage.createNew} />
+                            type="text" name="title" placeholder='Title For Your Quiz' 
+                            value={quizDetails.title} 
+                            onChange={setFields} 
+                            disabled={!formState.isActive || formState.requesting} 
+                        />
 
                         <input className='px-2 py-1 rounded-md border-2 border-[var(---color-input-border)] focus:outline-0 focus:border-[var(---color-input-b-focus)]'
-                            type="text" name="category" placeholder='Category of Your Quiz' value={quizDetails.category} onChange={setFields} disabled={!manage.createNew} />
+                            type="text" name="category" placeholder='Category of Your Quiz' 
+                            value={quizDetails.category} 
+                            onChange={setFields} 
+                            disabled={!formState.isActive || formState.requesting} 
+                        />
 
                         <textarea rows={5} className='px-4 py-2 rounded-md border-2 border-[var(---color-input-border)] focus:outline-0 focus:border-[var(---color-input-b-focus)]
-                    resize-none'
-                            name='description' placeholder='description for your quiz' value={quizDetails.description} onChange={setFields}
-                            disabled={!manage.createNew}>
+                            resize-none'
+                            name='description' placeholder='description for your quiz' 
+                            value={quizDetails.description} 
+                            onChange={setFields}
+                            disabled={!formState.isActive || formState.requesting}>
                         </textarea>
-                        <div><p className='text-sm text-[var(---colo-text-light)]'>*Note: You can assingn duration for each question ,if duration not assigned for entire quiz. </p></div>
                         <div className='flex justify-between gap-2'>
                             <h4 className='flex-1 text-md  text-[var(---color-text-light)]'>Duration For Entire Quiz :</h4>
                             <select className='flex-1 focus:outline-0 text-[var(---color-text-light)] text-center' name="" id=""
@@ -283,7 +330,9 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                                         setIsCustomTIme(false)
                                         setQuizDetails({ type: 'set', name: 'timer', value: { avail: false, duration: 0 } });
                                     }
-                                }}>
+                                }}
+                                disabled={formState.requesting}
+                                >
                                 <option className='bg-[var(---color-bg)]' value=''>---No Duration---</option>
                                 <option className='bg-[var(---color-bg)]' value="custom">Custom</option>
                                 <option className='bg-[var(---color-bg)]' value="1">1 Minute</option>
@@ -311,8 +360,9 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                                                 const duration = (minutes * 60) + customTime.sec;
                                                 setQuizDetails({ type: 'set', name: 'timer', value: { avail: true, duration: duration } });
                                             }
-                                            else manager({ field: 'msg', value: { type: 'err', msg: 'Please Select valid Minutes' } })
+                                            else dispatchFormState({ field: 'msg', value: { type: 'err', msg: 'Please Select valid Minutes' } })
                                         }}
+                                        disabled={formState.requesting}
                                     />
                                     <span className="text-sm">Minutes</span>
                                 </div>
@@ -331,8 +381,9 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                                                 const duration = (customTime.min * 60) + seconds;
                                                 setQuizDetails({ type: 'set', name: 'timer', value: { avail: true, duration: duration } });
                                             }
-                                            else manager({ field: 'msg', value: { type: 'err', msg: 'Please Select valid Seconds' } })
+                                            else dispatchFormState({ field: 'msg', value: { type: 'err', msg: 'Please Select valid Seconds' } })
                                         }}
+                                        disabled={formState.requesting}
                                     />
                                     <span className="text-sm">Seconds</span>
                                 </div>
@@ -343,35 +394,35 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                                 <h4 className='flex-1 text-md  text-[var(---color-text-light)]'>Publish :</h4>
                                 <select className={`flex-1 focus:outline-0 text-[var(---color-text-light)] text-center' name="" id="" 
                                     ${edit.published ? "cursor-not-allowed " : ""}`}
-                                    disabled={edit.published}
+                                    disabled={edit.published || formState.requesting}
                                     value={publishNow}
                                     onChange={(e) => {
                                         let publish = e.target.value;
                                         setPublishNow(publish);
-                                        switch(publish){
+                                        switch (publish) {
                                             case 'now':
-                                                return setQuizDetails({type:'set',name:'schedule',value:new Date().toISOString()})
+                                                return setQuizDetails({ type: 'set', name: 'schedule', value: new Date().toISOString() })
                                             case 'private':
-                                                return setQuizDetails({type:'set',name:'schedule',value:null})
-                                            default :
+                                                return setQuizDetails({ type: 'set', name: 'schedule', value: null })
+                                            default:
                                                 return null;
                                         }
-    
+
                                     }}
-                                    >
+                                >
                                     <option className='bg-[var(---color-bg)]' value="private" >Private</option>
                                     <option className='bg-[var(---color-bg)]' value="now" >Publish Now</option>
                                     <option className='bg-[var(---color-bg)]' value="schedule" >schedule</option>
                                 </select>
                             </div>
                         }
-                        { (publishNow === 'schedule') && 
-                            <PublishInput init={quizDetails.schedule} published={edit.published} onUTCChange={(utcTime)=>setQuizDetails({type:'set',name:'schedule',value:utcTime})}/>
+                        {(publishNow === 'schedule') &&
+                            <PublishInput init={quizDetails.schedule} published={edit.published} onUTCChange={(utcTime) => setQuizDetails({ type: 'set', name: 'schedule', value: utcTime })} />
                         }
                         <div className='w-full mt-5'>
                             <button type="button" className='w-[140px] ml-auto  px-2 py-1 flex gap-2.5 justify-center items-center rounded-full bg-black text-white 
                       cursor-pointer disabled:bg-gray-800 disabled:cursor-not-allowed'
-                                disabled={!manage.createNew}
+                                disabled={!formState.isActive || formState.requesting}
                                 onClick={ResetQuiz}>
                                 <RiResetLeftFill color='white' />
                                 Reset
@@ -379,8 +430,8 @@ const QuizForm = ({ manage, manager, edit,setEdit }) => {
                         </div>
                         <button type="submit" className='cursor-pointer px-4 py-2 rounded-full bg-black text-white 
                     disabled:bg-gray-800 disabled:cursor-not-allowed'
-                            disabled={!manage.createNew}>
-                            {edit ? 'Update' :'Create'}
+                            disabled={!formState.isActive || formState.requesting}>
+                            {edit ? 'Updat' : 'Creat'}{formState.requesting ? 'ing ...' : 'e' }
                         </button>
                     </div>
                 </>

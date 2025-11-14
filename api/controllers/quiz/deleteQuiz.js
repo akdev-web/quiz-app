@@ -7,13 +7,8 @@ export default async function deleteQuiz(req,res) {
     const {user,quiz} = req;
     try {
         // Delete quiz thumbnail from Cloudinary if exists
-        if (quiz.thumbnail) {
-            // Extract public_id from the Cloudinary URL
-            const matches = quiz.thumbnail.match(/quiz_thumbnails\/([^\.]+)\./);
-            const publicId = matches ? `quiz_thumbnails/${matches[1]}` : null;
-            if (publicId) {
-                await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
-            }
+        if (quiz.thumbnail?.cloudId) {
+                 await cloudinary.uploader.destroy(quiz.thumbnail.cloudId, { resource_type: 'image' });
         }
         // Delete all questions related to this quiz
         await Question.deleteMany({ quizId: quiz.quizId });

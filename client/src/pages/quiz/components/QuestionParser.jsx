@@ -1,16 +1,12 @@
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 
-export default function QuestionParser({onUpdate}) {
+const QuestionParser = forwardRef(({onUpdate},ref) => {
     const [textInput, setTextInput] = useState('');
-    const [form, setForm] = useState({
-        question: '',
-        options: [],
-        answer: '',
-    });
 
 
-    console.log('form', form);
-
+    useImperativeHandle(ref,()=>({
+        reset:()=>{setTextInput('')}
+    }))
     const parseInput = (input) => {
         const lines = input.split('\n');
         let question = '';
@@ -45,7 +41,6 @@ export default function QuestionParser({onUpdate}) {
             }
         })
 
-        setForm({ question, options, answer });
         onUpdate({ question, options, answer : ansIdx+1 });
     }
 
@@ -69,4 +64,6 @@ export default function QuestionParser({onUpdate}) {
             />
         </div>
     );
-}
+})
+
+export default QuestionParser;

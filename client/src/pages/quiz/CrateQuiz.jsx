@@ -12,7 +12,6 @@ const CreateQuiz= () => {
   const quizDetails = location.state;
   const alertMessage = location.alert;
 
-  console.log(location);
 
 
   useEffect(() => {
@@ -45,10 +44,10 @@ const CreateQuiz= () => {
         {
           quiz.length > 0 ?
           quiz.map((v,i)=>{
-            return <div className='flex gap-2.5 justify-between items-center mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
+            return <div key={i} className='flex gap-2.5 justify-between items-center mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
               <div className='flex-1'>
                 <p className=''>
-                  <span className=''>{v.id}. </span> 
+                  <span className=''>{i+1}. </span> 
                   {v.quest}
                 </p>
               </div>
@@ -64,7 +63,6 @@ const CreateQuiz= () => {
           </div>
         }
       </div>
-      <div >Quiz Feed</div>
     </div>
   )
 }

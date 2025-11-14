@@ -60,21 +60,29 @@ const Dashboard = () => {
           :
           <QuizForm manage={manage} manager={manager} />
       }
-      <div className='mt-10 grid gap-4 grid-cols-1  lg:grid-cols-2  xl:grid-cols-3'>
-        {
-          loading ? 
-          <p className='text-center text-[var(---color-text-light)] col-span-full'>Loading ....</p> :
-          myQuiz.length === 0 ?
-            <p className='text-center text-[var(---color-text-light)] col-span-full'>No quizzes created yet !</p>
-            :
-            myQuiz.map((quiz) => {
-              return <QuizCardDash key={quiz.quizId} quiz={quiz.quiz} totalParticipants={quiz.totalParticipants} topParticipants={quiz.topParticipants}
-                edit={setEdit}
-                refreshQuizDashboard={() => { get_quizes() }}
-              />
-            })
-        }
-      </div>
+
+      
+      {
+        loading ? 
+          <>
+            <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+          </>
+        :
+        myQuiz.length === 0 ?
+            <p className='mt-4 text-center bg-[var(---color-bg)] px-2 py-4 font-semibold'> No quiz created yet.</p>
+        :
+        <div className='mt-10 grid gap-4 grid-cols-1  lg:grid-cols-2  xl:grid-cols-3'>
+          {
+              myQuiz.map((quiz,i) => {
+                return <QuizCardDash key={i} quiz={quiz.quiz} totalParticipants={quiz.totalParticipants} topParticipants={quiz.topParticipants}
+                  edit={setEdit}
+                  refreshQuizDashboard={() => { get_quizes() }}
+                />
+              })
+          }
+        </div>
+      }
+      
     </div>
   )
 }

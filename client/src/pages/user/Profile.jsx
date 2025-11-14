@@ -58,7 +58,6 @@ const Profile = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res);
       if (res.data.success) {
         const {update} = res.data;
         setUser(prev=>({...prev,...update}))

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 import api from '../../../components/api'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IoArrowBack } from 'react-icons/io5';
@@ -6,6 +6,7 @@ import QuestionParser from './QuestionParser';
 
 const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
     const navigate = useNavigate()
+    const questionParserRef = useRef();
     const quiz_id = useParams().id;
 
     useEffect(()=>{
@@ -33,7 +34,6 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
     },[quiz_id])
 
     useEffect(()=>{
-        console.log(edit);
         const setEditor = (id) => {
             const toEdit = quiz.filter((v, i) => v.id === id)[0];
             console.log(toEdit);
@@ -70,11 +70,12 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
     const [answer, setAnswer] = useState(0);
 
 
-    const resetQuetionEditor = () => {{}
+    const resetQuetionEditor = () => {
         setQuestion('')
         setAnswer(0)
         setNofOptions(0);
         setOptions([]);
+        questionParserRef.current.reset();
     }
 
     const validateQuestion = () => {
@@ -185,7 +186,6 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
             const res = await api.post('/quiz/add', { quizId, quiz:currentQuiz });
             if (res.data.success) {
                 const data = res.data;
-                console.log(data.data);
                 manager({ field: 'msg', value: { type: 'ok', msg: data.msg } });
             }
         } catch (error) {
@@ -225,6 +225,7 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
                         )
                     }
                     <QuestionParser 
+                        ref={questionParserRef}
                         onUpdate={(form)=>{
                             setQuestion(form.question); 
                             setOptions(form.options.map((v,i)=>({
@@ -234,7 +235,7 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
                             }))); 
                             setAnswer(form.answer); 
                             setNofOptions(form.options.length);}} 
-    
+                        
                     />
 
 
@@ -285,7 +286,7 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
                             </button>
                     }
                     <button type="button" className='cursor-pointer px-4 py-2 flex gap-2 justify-center items-center rounded-full bg-black text-white 
-              disabled:bg-gray-800 disabled:cursor-not-allowed'
+                    disabled:bg-gray-800 disabled:cursor-not-allowed'
                         disabled={edit || edit != 0}
                         onClick={handleDone}>
                         Save
