@@ -18,8 +18,7 @@ export default async function removeQuestion(req,res) {
         // Also delete all answers related to this 
         await Answer.deleteMany({"answers.question":deleted._id});
 
-        const allQuestions = await Question.find({quizId:quiz}).sort({id:1});
-        return res.status(200).json({success:true,msg:'Question deleted successfully',data:allQuestions});
+        return res.status(200).json({success:true,msg:'Question deleted successfully',removed:deleted.id});
         
 
     } catch (error) {

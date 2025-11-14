@@ -25,7 +25,6 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
                     }
                 }
             } catch (error) {
-                console.log(error);
                 let res = error.response?.data;
                 manager({field:'msg',value:{type:'err',msg:res.err}});
             }
@@ -36,7 +35,6 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
     useEffect(()=>{
         const setEditor = (id) => {
             const toEdit = quiz.filter((v, i) => v.id === id)[0];
-            console.log(toEdit);
             if (toEdit) {
                 setQuestion(toEdit.quest)
                 setAnswer(toEdit.ans)
@@ -144,8 +142,8 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
         if (!validateQuestion()) {
             return;
         }
-
-        const new_quiz = { id: quiz.length + 1, quest: question, options: options, ans: answer };
+        const newId = quiz.length > 0 ? quiz[quiz.length-1].id+1 : 1;
+        const new_quiz = { id: newId, quest: question, options: options, ans: answer };
         setQuiz(prev => [...prev, new_quiz]);
 
         resetQuetionEditor();
@@ -177,7 +175,8 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
 
         let currentQuiz = [...quiz];
         if (validateQuestion()) {
-            const new_quiz = { id: quiz.length + 1, quest: question, options: options, ans: answer };
+            const newId = quiz.length > 0 ? quiz[quiz.length-1].id+1 : 1;
+            const new_quiz = { id: newId, quest: question, options: options, ans: answer };
             currentQuiz = [...quiz, new_quiz];
         }
 

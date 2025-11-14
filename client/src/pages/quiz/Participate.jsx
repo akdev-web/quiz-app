@@ -32,6 +32,7 @@ const Participate = () => {
     }
     const [{ isLoading, quizDetails }, setQuiz] = useReducer(reducer, initial)
     const [fadeTransition, setFadeTransition] = useState(true);
+    const [nextloading,setNextLoading] = useState(false);
 
     const [iscompleted, setCompleted] = useState(false);
     const [question, setQuestion] = useState(null);
@@ -131,19 +132,21 @@ const Participate = () => {
         if (qes == null) return;
 
         setFadeTransition(false);
-
+        setNextLoading(true)
         setTimeout(async() => {
-            setCurrent({ type: 'proc', value: true })
+            
             try {
                 const res = await api.get(`/quiz/${quizId}/${qes}`)
 
                 if (res.data.success) {
+                    setNextLoading(false)
                     setQuestion(res.data.data);
                     setCurrent({ type: 'set', id: 'ans', value: null })
                     setCurrent({ type: 'proc', value: false })
                     setFadeTransition(true);
                 }
             } catch (error) {
+                setNextLoading(false)
                 setCurrent({ type: 'proc', value: false })
                 setFadeTransition(true);
                 console.log(error);
@@ -176,7 +179,7 @@ const Participate = () => {
         }
     }
 
-    if (isLoading) return <div>Loading ....</div>;
+    if (isLoading) return <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>;
     return (
         <div className='sm:max-w-[800px] mx-auto'>
             {
@@ -201,8 +204,11 @@ const Participate = () => {
                     iscompleted ?
                         <div>Redirecting to Result ...</div>
                         :
-                        processing ?
-                            <div>Loading ....</div>
+                        nextloading ?
+                            <>
+                                <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                                <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching next ....</p>
+                            </>
                             :
                             (question &&
                                 <>
@@ -211,19 +217,24 @@ const Participate = () => {
                                         {/* <span className='text-md text-right text-[var(---color-text-xlight)]'> 00:40</span> */}
                                     </div>
                                     <h3 className='mt-5 text-lg text-center font-semibold'>{question.quest}</h3>
-                                    <div className='mt-5 text-center flex flex-col gap-3 '>
+                                    <div className={`relative mt-5 text-center flex flex-col gap-3 `}>
                                         {
                                             question.options?.map((opt) => {
                                                 return (
-                                                    <div onClick={() => submitAnswer(opt.id)} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
-                                                        transition-colors duration-300 cursor-pointer
+                                                    <div onClick={() => {!processing && submitAnswer(opt.id)}} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
+                                                        transition-colors duration-300 cursor-pointer  ${processing && 'opacity-10'}
                                                         ${ans === opt.id ? 'border-[var(--border-selected)]' : 'border-[var(--border-default)]'}`}>
                                                         <p>{opt.option}</p>
                                                     </div>
                                                 )
                                             })
                                         }
-
+                                        { processing &&
+                                            <div className='absolute top-0 left-0 w-full h-full '>
+                                                <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                                                <p className='text-sm text-[var(---color-text-light)]'>Saving Response ...</p>
+                                            </div> 
+                                        }  
                                     </div>
                                 </>)
                 }

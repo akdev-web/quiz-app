@@ -38,5 +38,6 @@ export default async function quizResult(req,res) {
         res.status(200).json({success:true,msg:'result !',resultDetails,resultSummary,timespent:answers.timeSpent});
     } catch (error) {
         console.log(error);
+        res.status(500).json({err:'Unexpected Error !'});
     }
 }

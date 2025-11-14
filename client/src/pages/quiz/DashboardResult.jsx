@@ -23,7 +23,6 @@ const DashboardResult = () => {
     msg:null,
   });
 
-  console.log(result);
   
   useEffect(() => {
     async function getRankList() {
@@ -90,7 +89,10 @@ const DashboardResult = () => {
 
   if (pageState.loading) {
     return (
-      <div className='text-center'>Loading...</div>
+      <>
+        <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+        <p className='text-center text-[var(---color-text-xlight)] mt-4'>Please wait while fetching ...</p>
+      </>
     )
   }
 

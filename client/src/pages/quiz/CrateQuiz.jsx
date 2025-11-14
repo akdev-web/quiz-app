@@ -30,13 +30,19 @@ const CreateQuiz= () => {
       const res = await api.delete('/quiz/remove_quest',{params:{quiz:quizDetails.quizId,id:id}});
       if(res.data.success){
         let data = res.data;
-        setQuiz(data.data)
+        setQuiz(prev=>prev.filter(q.id!==data.removed))
         ToastMsg({ type: 'ok', msg: data.msg || 'Question deleted successfully' })        
       }
     } catch (error) {
-      console.log(error)
+      const errRes = error.response.data?.err || 'Server Error';
+      ToastMsg({msg:errRes,type:'err'})
     }
   }
+
+  const handelRemoveQuestion = (id) =>{
+    setQuiz(prev=>prev.filter(q=>q.id!==id));
+  }
+
   return (
     <div>
      <QuestForm quizDetails={quizDetails} quiz={quiz} edit={edit} setEdit={setEdit} setQuiz={setQuiz} />
@@ -53,7 +59,7 @@ const CreateQuiz= () => {
               </div>
               <div className='flex items-center justify-end gap-2.5'>
                 <div className='cursor-pointer' onClick={()=>setEdit(v.id)}><SquarePen size={24} color='var(---color-text-light)' /></div>
-                <div className='cursor-pointer' onClick={()=>handleDelteQuestion(v._id)}><Trash size={24} color='var(---color-text-light)'/></div>
+                <div className='cursor-pointer' onClick={()=>{v._id ? handleDelteQuestion(v._id) : handelRemoveQuestion(v.id)}}><Trash size={24} color='var(---color-text-light)'/></div>
               </div>
             </div>
           })

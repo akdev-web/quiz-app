@@ -15,16 +15,20 @@ const Result = () => {
   const [currentDetail, setCurrentDetail] = useState(null)
   const [detailCounter, setDetailCounter] = useState(0);
   const [jumpQues, setJumpQues] = useState(0);
+  const [pageState,setPageState] = useState({fetchingQuiz:true,fetchingResult:true})
 
   useEffect(() => {
     const getQuiz = async () => {
       try {
+        setPageState(prev=>({...prev,fetchingQuiz:true}))
         const res = await api.get(`/quiz/${quizId}`);
         if (res.data.success) {
+          setPageState(prev=>({...prev,fetchingQuiz:false}))
           let data = res.data;
           setQuiz(data.quiz);
         }
       } catch (error) {
+        setPageState(prev=>({...prev,fetchingQuiz:false}))
         ToastMsg({ type: 'err', msg: error.response?.data?.err || 'Failed to fetch quiz data' });
         navigate('/', { replace: true });
       }
@@ -38,9 +42,11 @@ const Result = () => {
   }, [detailCounter, result?.details])
 
   async function getResult() {
+    setPageState(prev=>({...prev,fetchingResult:true}))
     try {
       const res = await api.get(`submit_quiz/result/${quizId}`);
       if (res.data?.success) {
+        setPageState(prev=>({...prev,fetchingResult:false}))
         const result = res.data;
         setResult({
           summary: result.resultSummary,
@@ -49,6 +55,7 @@ const Result = () => {
         })
       }
     } catch (error) {
+      setPageState(prev=>({...prev,fetchingResult:false}))
       const data = error.response.data;
       if (!data.participated) {
         navigate(`/quiz/participate/${quizId}`, { state: { alert: { msg: data.err, type: 'err' } } });
@@ -57,9 +64,12 @@ const Result = () => {
   }
   useEffect(() => { getResult() }, [])
 
-  if (!result) {
+  if (pageState.fetchingQuiz || pageState.fetchingResult) {
     return (
-      <div>Loading ....</div>
+      <>
+        <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+        <p className='text-center text-[var(---color-text-xlight)] mt-4'>Please wait while fetching ...</p>
+      </>
     )
   }
 
@@ -138,10 +148,9 @@ const Result = () => {
               ))
             }
           </div>
-        </div>
-      }
-      {
-        result.details &&
+        </div>} 
+      
+        {result.details &&
         <div className='bg-[var(---color-bg)] px-4 py-5 rounded-md mt-10'>
           <div className='flex justify-between'>
             <h3 className='text-2xl font-medium text-center mb-5'>Result Details</h3>

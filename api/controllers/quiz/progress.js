@@ -23,7 +23,7 @@ export default async function progress(req,res) {
  
                 const remainAnswers = [];
                 questions.forEach((qes,idx)=>{
-                    if(participated.answers.length < (idx+1) ) return;
+                    if(idx < participated.answers.length) return;
                     remainAnswers.push({
                         answer:{qId:qes.id,aid:null},
                         question:qes._id,
