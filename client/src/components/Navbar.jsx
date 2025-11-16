@@ -25,7 +25,7 @@ const Navbar = () => {
         };
     }, [showUserOpt]);
   return (
-    <nav className='sticky top-0 w-full py-2 px-4 flex justify-between items-center bg-[var(---color-nav-bg)] text-[var(---color-text)] 
+    <nav className='sticky z-99 top-0 w-full py-2 px-4 flex justify-between items-center bg-[var(---color-nav-bg)] text-[var(---color-text)] 
                     transition-shadow duration-300 shadow-md dark:shadow-lg shadow-gray-200 dark:shadow-black'>
         <div className='w-8'> 
             <img src="/quizm.png" alt="logo" className='w-full'/>

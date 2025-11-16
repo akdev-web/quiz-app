@@ -58,7 +58,7 @@ const CreateQuiz= () => {
                 </p>
               </div>
               <div className='flex items-center justify-end gap-2.5'>
-                <div className='cursor-pointer' onClick={()=>setEdit(v.id)}><SquarePen size={24} color='var(---color-text-light)' /></div>
+                <div className='cursor-pointer' onClick={()=>{setEdit(v.id)}}><SquarePen size={24} color='var(---color-text-light)' /></div>
                 <div className='cursor-pointer' onClick={()=>{v._id ? handleDelteQuestion(v._id) : handelRemoveQuestion(v.id)}}><Trash size={24} color='var(---color-text-light)'/></div>
               </div>
             </div>

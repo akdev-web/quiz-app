@@ -1,13 +1,18 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useReducer, useRef, useState } from 'react'
 import api from '../../../components/api'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IoArrowBack } from 'react-icons/io5';
 import QuestionParser from './QuestionParser';
 
-const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
+const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
     const navigate = useNavigate()
     const questionParserRef = useRef();
     const quiz_id = useParams().id;
+    const questFormRef = useRef(null)
+
+    // useImperativeHandle(ref,()=>{
+    //     focus: questFormRef.
+    // })
 
     useEffect(()=>{
         if(!quiz_id) return;
@@ -295,6 +300,6 @@ const QuestForm = ({quizDetails,quiz,setQuiz,edit,setEdit}) => {
 
         </div>
     )
-}
+})
 
 export default QuestForm

@@ -33,6 +33,11 @@
     --border-correct: #10b981;   /* green-500 */
     --border-incorrect: #ef4444; /* red-500 */
     --border-disabled: #9ca3af;  /* gray-400 */
+
+    /* quiz cared button */
+    --color-qbtn-bg:#e5e7eb;
+    --color-qbtn-txt:white;
+    --color-qbtn-hover-bg:#d1d4db;
 }
 
 .dark {
@@ -64,6 +69,11 @@
     --border-correct: #34d399;   /* green-400 */
     --border-incorrect: #f87171; /* red-400 */
     --border-disabled: #6b7280;  /* gray-500 */
+
+    /* quiz cared button */
+    --color-qbtn-bg:#2b2b2b;
+    --color-qbtn-txt:white;
+    --color-qbtn-hover-bg:#1e1d1d;
 
     input[type="datetime-local"]::-webkit-calendar-picker-indicator {
         filter: invert(1); /* Invert icon color in dark mode */

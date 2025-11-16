@@ -71,7 +71,7 @@ const Dashboard = () => {
         myQuiz.length === 0 ?
             <p className='mt-4 text-center bg-[var(---color-bg)] px-2 py-4 font-semibold'> No quiz created yet.</p>
         :
-        <div className='mt-10 grid gap-4 grid-cols-1  lg:grid-cols-2  xl:grid-cols-3'>
+        <div className='mt-10 grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3'>
           {
               myQuiz.map((quiz,i) => {
                 return <QuizCardDash key={i} quiz={quiz.quiz} totalParticipants={quiz.totalParticipants} topParticipants={quiz.topParticipants}

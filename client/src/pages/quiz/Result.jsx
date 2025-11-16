@@ -87,6 +87,7 @@ const Result = () => {
       {
         quiz &&
         <div className='bg-[var(---color-bg)] px-4 py-5 rounded-md'>
+          {quiz.thumbnail?.url && <img className='w-full aspect-[16:9] object-cover rounded-md mb-4 max-w-[500px] mx-auto shadow-lg shadow-black' src={quiz.thumbnail.url} alt=""  /> }
           <div>
             <h2 className='text-3xl text-center mb-5'>{quiz.title?.toUpperCase()}</h2>
             <p className='text-[var(---color-text-light)] text-center mb-5'>{quiz.description}</p>

@@ -95,7 +95,7 @@ export default async function getQuiz(req,res) {
                     // other quiz fields...
                     participated: 1,
                     completed:1,
-                    createdBy: '$creator.username',
+                    createdBy: {username:'$creator.username',profile:'$creator.profile.url'},
                     // include other fields as needed
                     title: 1,
                     description: 1,

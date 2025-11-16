@@ -67,7 +67,7 @@ const Quiz = () => {
         quiz?.length <= 0 ?
         <p className='mt-4 text-center bg-[var(---color-bg)] px-2 py-4 font-semibold'> No quiz recommendations yet.</p>
         :
-        <div className='mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        <div className='mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 '>
           {
             quiz.map((quiz)=>{
               return <QuizCard key={quiz.quizId} quiz={quiz} edit={setEdit}/>

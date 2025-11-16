@@ -80,8 +80,8 @@ const Profile = () => {
   return (
     <>
       {user && (
-        <div className="max-w-[370px] mx-auto my-8 p-7 shadow-lg rounded-2xl text-center bg-white text-black border border-gray-200">
-          <h2 className="font-bold text-2xl mb-5 tracking-wide text-black">Profile</h2>
+        <div className="max-w-[370px] mx-auto my-8 p-7 shadow-xl rounded-2xl text-center ">
+          <h2 className="font-bold text-2xl mb-5 tracking-wide ">Profile</h2>
           <div className="mb-5 relative inline-block">
             {preview ? (
               <img src={preview} alt="Preview" className="w-[120px] h-[120px] rounded-full object-cover border-2 border-black" />
@@ -109,10 +109,10 @@ const Profile = () => {
               onFocus={handleUsernameEdit}
               onBlur={handleUsernameBlur}
               readOnly={!usernameEditMode}
-              className={`text-lg px-3 py-1.5 rounded-lg w-40 text-center outline-none transition-all duration-200 ${usernameEditMode ? 'border-2 border-black bg-white cursor-text' : 'border-2 border-gray-200 bg-gray-100 cursor-pointer'}`}
+              className={`text-lg px-3 py-1.5 rounded-lg w-40 text-center outline-none transition-all duration-200 ${usernameEditMode ? 'border-2 border-gray-500 cursor-text' : 'border-gray-400 border-2 bg-gray-400 cursor-pointer'}`}
             />
           </div>
-          <div className="mb-5 text-gray-700 text-base">{user.email}</div>
+          <div className="mb-5 text-[var(---color-text-xlight)]">{user.email}</div>
           {(editMode || preview || usernameChanged || usernameEditMode) && (
             <button
               onClick={handleSave}
