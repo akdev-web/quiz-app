@@ -10,9 +10,9 @@ const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
     const quiz_id = useParams().id;
     const questFormRef = useRef(null)
 
-    // useImperativeHandle(ref,()=>{
-    //     focus: questFormRef.
-    // })
+    useImperativeHandle(ref,()=>{
+        setfocus: questFormRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    })
 
     useEffect(()=>{
         if(!quiz_id) return;
@@ -199,7 +199,7 @@ const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
     }
 
     return (
-        <div className='w-full px-4 py-8 max-w-[800px] mx-auto bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
+        <div ref={questFormRef} className='w-full px-4 py-8 max-w-[800px] mx-auto bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
             <div className=' flex gap-4 items-center'>
                 <div onClick={()=>navigate('/quiz')}>
                     <IoArrowBack size={28} />

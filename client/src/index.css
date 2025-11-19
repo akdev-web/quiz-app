@@ -38,6 +38,13 @@
     --color-qbtn-bg:#e5e7eb;
     --color-qbtn-txt:white;
     --color-qbtn-hover-bg:#d1d4db;
+
+    /* quiz card skel */
+    ---color-qsklbg: #ffffff;
+    ---color-qsklbg-light: #e5e7eb;
+    
+    --color-qskl-text: #111;
+    --color-qskl-text-light: #555;
 }
 
 .dark {
@@ -74,6 +81,13 @@
     --color-qbtn-bg:#2b2b2b;
     --color-qbtn-txt:white;
     --color-qbtn-hover-bg:#1e1d1d;
+
+    /* quiz card skel */
+    ---color-qsklbg: #1c1c1c;
+    ---color-qsklbg-light: #2a2a2a;
+    
+    --color-qskl-text: #f5f5f5;
+    --color-qskl-text-light: #ccc;
 
     input[type="datetime-local"]::-webkit-calendar-picker-indicator {
         filter: invert(1); /* Invert icon color in dark mode */

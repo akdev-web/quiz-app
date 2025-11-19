@@ -17,7 +17,7 @@ export default async function quizResult(req,res) {
         answers.answers.forEach((ans,i)=>{
             const summary = {questionNo:i+1,question:ans.question.quest,correct:false};
             
-            console.log(ans);
+
             const skipped = !isNaN( new Date( ans.answer.skippedAt ).getTime() );
             const answerd = ans.answer.aid != null && !isNaN(ans.answer.aid) 
             const correct = answerd &&  (ans.answer.aid === ans.question.ans)

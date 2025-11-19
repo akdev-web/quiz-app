@@ -38,7 +38,7 @@ const QuizCardDash = ({ quiz, totalParticipants, topParticipants, edit, deleteQu
     };
 
     return (
-        <div className="relative rounded-xl max-w-[400px] sm:max-w-auto mx-auto  shadow-lg bg-[var(---color-bg)] overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-1 flex flex-col">
+        <div className="relative rounded-xl max-md:max-w-[400px] max-md:mx-auto  shadow-lg bg-[var(---color-bg)] overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-1 flex flex-col">
             {/* Image Section */}
             <div className="w-full  flex items-center justify-center bg-[var(---color-bg-light)] overflow-hidden">
                 <img
@@ -57,7 +57,7 @@ const QuizCardDash = ({ quiz, totalParticipants, topParticipants, edit, deleteQu
                 </div>
 
                 {/* Quiz Info */}
-                <div className="details cursor-pointer mb-3" onClick={() => navigate(`/quiz/participate/${quizId}`)}>
+                <div className="details mb-3" >
                     <h3 className="text-lg md:text-xl font-bold text-[var(---color-text)] mb-1 line-clamp-2">{trimmed(title, 10)}</h3>
                     <p className="text-sm md:text-base text-[var(---color-text-light)] mb-2 line-clamp-3">{trimmed(description, 20)}</p>
                     {timer?.duration && (

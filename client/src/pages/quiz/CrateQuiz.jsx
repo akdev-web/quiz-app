@@ -1,5 +1,5 @@
 import { SquarePen, Trash } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import QuestForm from './components/QuestForm';
@@ -11,6 +11,7 @@ const CreateQuiz= () => {
   const navigate = useNavigate();
   const quizDetails = location.state;
   const alertMessage = location.alert;
+  const questFormRef = useRef(null)
 
 
 
@@ -45,7 +46,7 @@ const CreateQuiz= () => {
 
   return (
     <div>
-     <QuestForm quizDetails={quizDetails} quiz={quiz} edit={edit} setEdit={setEdit} setQuiz={setQuiz} />
+     <QuestForm ref={questFormRef} quizDetails={quizDetails} quiz={quiz} edit={edit} setEdit={setEdit} setQuiz={setQuiz} />
       <div className='w-full max-w-[800px] mx-auto '>
         {
           quiz.length > 0 ?
@@ -58,7 +59,7 @@ const CreateQuiz= () => {
                 </p>
               </div>
               <div className='flex items-center justify-end gap-2.5'>
-                <div className='cursor-pointer' onClick={()=>{setEdit(v.id)}}><SquarePen size={24} color='var(---color-text-light)' /></div>
+                <div className='cursor-pointer' onClick={()=>{setEdit(v.id); questFormRef?.current?.setfocus()}}><SquarePen size={24} color='var(---color-text-light)' /></div>
                 <div className='cursor-pointer' onClick={()=>{v._id ? handleDelteQuestion(v._id) : handelRemoveQuestion(v.id)}}><Trash size={24} color='var(---color-text-light)'/></div>
               </div>
             </div>

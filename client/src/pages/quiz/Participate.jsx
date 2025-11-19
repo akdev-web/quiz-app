@@ -199,41 +199,47 @@ const Participate = () => {
                     )}
                 </div>
             }
-            <div className='mt-10 w-full flex flex-col justify-start rounded-md  bg-[var(---color-bg)] px-4 py-6'>
-                {
-                    iscompleted ?
-                        <div className='text-center font-semibold text-[var(---color-text-light)]'>Redirecting to Result ...</div>
-                        :
-                        (question &&
-                            <>
-                                <div className={`flex items-center justify-between font-medium ${fadeTransition ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-                                    <h3 className='text-xl text-[var(---color-text-light)]'>Question: {qNo} of {quizDetails.totalQuestions} </h3>
-                                    {/* <span className='text-md text-right text-[var(---color-text-xlight)]'> 00:40</span> */}
-                                </div>
-                                <h3 className='mt-5 text-lg text-center font-semibold'>{question.quest}</h3>
-                                <div className={`relative mt-5 text-center flex flex-col gap-3 `}>
-                                    {
-                                        question.options?.map((opt) => {
-                                            return (
-                                                <div onClick={() => {!processing && submitAnswer(opt.id)}} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
-                                                    transition-colors duration-300 cursor-pointer  ${(processing || nextloading )&& 'opacity-10'}
-                                                    ${ans === opt.id ? 'border-[var(--border-selected)]' : 'border-[var(--border-default)]'}`}>
-                                                    <p>{opt.option}</p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                    { (processing||nextloading) &&
-                                        <div className='absolute top-0 left-0 w-full h-full '>
-                                            <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
-                                            {processing && <p className='text-sm text-[var(---color-text-light)]'>Saving Response ...</p>}
-                                            {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching next ....</p>}
-                                        </div> 
-                                    }  
-                                </div>
-                            </>)
-                }
-            </div>
+            {iscompleted ? 
+                <div className='text-center font-semibold text-[var(---color-text-light)]'>Redirecting to Result ...</div>
+                :
+                question ?
+                <div className='mt-10 w-full flex flex-col justify-start rounded-md  bg-[var(---color-bg)] px-4 py-6'>
+                    
+                    <div className={`flex items-center justify-between font-medium ${fadeTransition ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+                        <h3 className='text-xl text-[var(---color-text-light)]'>Question: {qNo} of {quizDetails.totalQuestions} </h3>
+                        {/* <span className='text-md text-right text-[var(---color-text-xlight)]'> 00:40</span> */}
+                    </div>
+                    <h3 className='mt-5 text-lg text-center font-semibold'>{question.quest}</h3>
+                    <div className={`relative mt-5 text-center flex flex-col gap-3 `}>
+                        {
+                            question.options?.map((opt) => {
+                                return (
+                                    <div onClick={() => {!processing && submitAnswer(opt.id)}} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
+                                        transition-colors duration-300 cursor-pointer  ${(processing || nextloading )&& 'opacity-10'}
+                                        ${ans === opt.id ? 'border-[var(--border-selected)]' : 'border-[var(--border-default)]'}`}>
+                                        <p>{opt.option}</p>
+                                    </div>
+                                )
+                            })
+                        }
+                        { (processing||nextloading) &&
+                            <div className='absolute top-0 left-0 w-full h-full '>
+                                <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                                {processing && <p className='text-sm text-[var(---color-text-light)]'>Saving Response ...</p>}
+                                {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching next ....</p>}
+                            </div> 
+                        }  
+                    </div>
+                            
+               
+                </div> :
+                (processing || nextloading) && 
+                <div className='w-full '>
+                    <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                    {processing && <p className='text-center text-sm text-[var(---color-text-light)]'>fetching progress state ...</p>}
+                    {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching quiz ....</p>}
+                </div> 
+            }
         </div>
     )
 }

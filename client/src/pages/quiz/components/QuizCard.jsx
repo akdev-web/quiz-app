@@ -62,7 +62,7 @@ const QuizCard = ({ quiz }) => {
     },[showCountdown,isVisible,scheduleTime])
 
     return (
-        <div ref={cardRef} className="sm:max-w-auto max-w-[400px] mx-auto flex flex-col rounded-xl shadow-lg bg-[var(---color-bg)] overflow-hidden transition hover:shadow-2xl hover:-translate-y-1 duration-200">
+        <div ref={cardRef} className="max-sm:max-w-[400px] max-sm:mx-auto flex flex-col rounded-xl shadow-lg bg-[var(---color-bg)] overflow-hidden transition hover:shadow-2xl hover:-translate-y-1 duration-200">
             <div className="w-full max-h-48 bg-[var(---color-bg-light)] overflow-hidden">
                 <img
                     className="h-full w-full aspect-[2/3] object-cover"
