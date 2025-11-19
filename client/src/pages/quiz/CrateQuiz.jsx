@@ -1,17 +1,18 @@
 import { SquarePen, Trash } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import QuestForm from './components/QuestForm';
 import api from '../../components/api';
 import ToastMsg from '../../components/util/AlertToast';
 
-const CreateQuiz= () => {
+const CreateQuiz = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const quizDetails = location.state;
   const alertMessage = location.alert;
   const questFormRef = useRef(null)
+  const quiz_id = useParams().id;
 
 
 
@@ -24,50 +25,83 @@ const CreateQuiz= () => {
 
   const [quiz, setQuiz] = useState([]);
   const [edit, setEdit] = useState(0)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    if (!quiz_id) return;
+
+    const getQuestions = async () => {
+      setLoading(true)
+      try {
+        const res = await api.get(`/quiz/${quiz_id}`);
+        if (res.data.success) {
+          setLoading(false)
+          let data = res.data;
+          if (data.data.length > 0) {
+            setQuiz(data.data);
+          }
+        }
+      } catch (error) {
+        setLoading(false)
+        let res = error.response?.data;
+        ToastMsg({ msg: res.err, type: 'err' });
+      }
+    }
+    getQuestions();
+  }, [quiz_id])
 
 
-  const handleDelteQuestion = async(id) =>{
+
+
+  const handleDelteQuestion = async (id) => {
     try {
-      const res = await api.delete('/quiz/remove_quest',{params:{quiz:quizDetails.quizId,id:id}});
-      if(res.data.success){
+      const res = await api.delete('/quiz/remove_quest', { params: { quiz: quizDetails.quizId, id: id } });
+      if (res.data.success) {
         let data = res.data;
-        setQuiz(prev=>prev.filter(q.id!==data.removed))
-        ToastMsg({ type: 'ok', msg: data.msg || 'Question deleted successfully' })        
+        setQuiz(prev => prev.filter(q.id !== data.removed))
+        ToastMsg({ type: 'ok', msg: data.msg || 'Question deleted successfully' })
       }
     } catch (error) {
       const errRes = error.response.data?.err || 'Server Error';
-      ToastMsg({msg:errRes,type:'err'})
+      ToastMsg({ msg: errRes, type: 'err' })
     }
   }
 
-  const handelRemoveQuestion = (id) =>{
-    setQuiz(prev=>prev.filter(q=>q.id!==id));
+  const handelRemoveQuestion = (id) => {
+    setQuiz(prev => prev.filter(q => q.id !== id));
   }
 
+  if (loading) {
+    return (
+      <>
+        <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+        <p className='mt-4 text-sm text-[var(---color-text-xlight)] text-center'>Fetching quiz data ...</p>
+      </>
+    )
+  }
   return (
     <div>
-     <QuestForm ref={questFormRef} quizDetails={quizDetails} quiz={quiz} edit={edit} setEdit={setEdit} setQuiz={setQuiz} />
+      <QuestForm ref={questFormRef} quizDetails={quizDetails} isQuizloaded={loading ? false : true} quiz={quiz} edit={edit} setEdit={setEdit} setQuiz={setQuiz} />
       <div className='w-full max-w-[800px] mx-auto '>
         {
           quiz.length > 0 ?
-          quiz.map((v,i)=>{
-            return <div key={i} className='flex gap-2.5 justify-between items-center mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
-              <div className='flex-1'>
-                <p className=''>
-                  <span className=''>{i+1}. </span> 
-                  {v.quest}
-                </p>
+            quiz.map((v, i) => {
+              return <div key={i} className='flex gap-2.5 justify-between items-center mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
+                <div className='flex-1'>
+                  <p className=''>
+                    <span className=''>{i + 1}. </span>
+                    {v.quest}
+                  </p>
+                </div>
+                <div className='flex items-center justify-end gap-2.5'>
+                  <div className='cursor-pointer' onClick={() => { setEdit(v.id); questFormRef?.current?.setfocus() }}><SquarePen size={24} color='var(---color-text-light)' /></div>
+                  <div className='cursor-pointer' onClick={() => { v._id ? handleDelteQuestion(v._id) : handelRemoveQuestion(v.id) }}><Trash size={24} color='var(---color-text-light)' /></div>
+                </div>
               </div>
-              <div className='flex items-center justify-end gap-2.5'>
-                <div className='cursor-pointer' onClick={()=>{setEdit(v.id); questFormRef?.current?.setfocus()}}><SquarePen size={24} color='var(---color-text-light)' /></div>
-                <div className='cursor-pointer' onClick={()=>{v._id ? handleDelteQuestion(v._id) : handelRemoveQuestion(v.id)}}><Trash size={24} color='var(---color-text-light)'/></div>
-              </div>
+            })
+            :
+            <div className='mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
+              <p className='text-md text-[var(---color-text-xlight)]'>No questions to show here ! </p>
             </div>
-          })
-          : 
-          <div className='mt-5  px-2 py-4 bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
-            <p className='text-md text-[var(---color-text-xlight)]'>No questions to show here ! </p>
-          </div>
         }
       </div>
     </div>

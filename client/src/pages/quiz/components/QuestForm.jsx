@@ -1,13 +1,13 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useReducer, useRef, useState } from 'react'
 import api from '../../../components/api'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { IoArrowBack } from 'react-icons/io5';
 import QuestionParser from './QuestionParser';
 
-const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
+const QuestForm = forwardRef(({quizDetails,isQuizloaded,quiz,setQuiz,edit,setEdit},ref) => {
     const navigate = useNavigate()
     const questionParserRef = useRef();
-    const quiz_id = useParams().id;
+    
     const questFormRef = useRef(null)
 
     useImperativeHandle(ref,()=>{
@@ -15,27 +15,10 @@ const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
     })
 
     useEffect(()=>{
-        if(!quiz_id) return;
-
-        const getQuestions = async() =>{
-            try {
-                const res = await api.get(`/quiz/${quiz_id}`);
-                if(res.data.success){
-                    let data = res.data;
-                    if(data.data.length >0){
-                        setQuiz(data.data);
-                    }
-                    else{
-                        manager({field:'msg',value:{msg:'This Quiz is Empty ! Insert Questions ...'}})
-                    }
-                }
-            } catch (error) {
-                let res = error.response?.data;
-                manager({field:'msg',value:{type:'err',msg:res.err}});
-            }
+        if(isQuizloaded && quiz?.length === 0){
+            manager({ field: 'msg', value: { msg: 'This Quiz is Empty ! Insert Questions ...' } })
         }
-        getQuestions();         
-    },[quiz_id])
+    },[isQuizloaded])
 
     useEffect(()=>{
         const setEditor = (id) => {
@@ -201,7 +184,7 @@ const QuestForm = forwardRef(({quizDetails,quiz,setQuiz,edit,setEdit},ref) => {
     return (
         <div ref={questFormRef} className='w-full px-4 py-8 max-w-[800px] mx-auto bg-[var(---color-bg)] rounded-lg shadow-md shadow-gray-300 dark:shadow-black'>
             <div className=' flex gap-4 items-center'>
-                <div onClick={()=>navigate('/quiz')}>
+                <div onClick={()=>navigate('/dashboard')}>
                     <IoArrowBack size={28} />
                 </div>
                 <div className=' w-full '>

@@ -19,7 +19,7 @@ const Quiz = () => {
   const [gridCols,setGridCols] = useState(1);
   const navigate = useNavigate();
 
-  console.log(gridCols);
+
   const skelArray = useMemo(() => {
       return Array.from(
           { length: Math.floor(Math.random() * (20 - 15 + 1)) + 15 },
@@ -107,9 +107,7 @@ const Quiz = () => {
         <div className='mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 '>
           {
             quiz.map((_quiz,i)=>{
-              console.log(quiz.length,gridCols,quiz.length%gridCols)
               const toRender = quiz.length-Math.floor(quiz.length%gridCols);
-              console.log(toRender);
               if(i>=toRender) return;
               return <QuizCard key={_quiz.quizId} quiz={_quiz} edit={setEdit}/>
             })
