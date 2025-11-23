@@ -39,9 +39,7 @@ const Dashboard = () => {
       }
     } catch (err) {
       setLoading(false)
-      if (err.response?.data) {
-        manager({ type: 'msg', value: { type: 'err', msg: err.response.data.err } });
-      }
+        manager({ type: 'msg', value: { type: 'err', msg: err.message } });
     }
   }
 

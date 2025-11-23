@@ -4,7 +4,7 @@ import { cookiesOptions, getAccessToken } from "../../lib/util/tokenGenerator.js
 import bcrypt from "bcryptjs";
 import connectDB from "../../config/conn.js";
 
-export default async function Refresh(req,res) {
+export default async function Refresh(req,res,next) {
     const auth = req.cookies.ACCESS;
     const requestedUser = req.user;
     if(!auth){
@@ -19,7 +19,6 @@ export default async function Refresh(req,res) {
             if(!user){
                 return res.status(401).json({err:'Unauthorized',loggedout:true});
             }
-                console.log(user);
                 const user_id = user._id.toString();
                 const match = bcrypt.compare(user_id,payload.token);
                 if(!match){
@@ -32,7 +31,7 @@ export default async function Refresh(req,res) {
         }
         return res.status(401).json({err:'Unauthorized',loggedout:true});
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     }
 }

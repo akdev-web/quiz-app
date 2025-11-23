@@ -27,8 +27,8 @@ const Navbar = () => {
   return (
     <nav className='sticky z-99 top-0 w-full py-2 px-4 flex justify-between items-center bg-[var(---color-nav-bg)] text-[var(---color-text)] 
                     transition-shadow duration-300 shadow-md dark:shadow-lg shadow-gray-200 dark:shadow-black'>
-        <div className='w-8'> 
-            <img src="/quizm.png" alt="logo" className='w-full'/>
+        <div className='w-20  cursor-pointer' onClick={()=>navigate('/')}> 
+            <img src="/quizv.png" alt="logo" className='object-cover drop-shadow-[1px_1px_2px_black]'/>
         </div>
         <div className='flex items-center gap-4 justify-end'>
             {

@@ -32,7 +32,7 @@ const Participate = () => {
     }
     const [{ isLoading, quizDetails }, setQuiz] = useReducer(reducer, initial)
     const [fadeTransition, setFadeTransition] = useState(true);
-    const [nextloading,setNextLoading] = useState(false);
+    const [nextloading, setNextLoading] = useState(false);
 
     const [iscompleted, setCompleted] = useState(false);
     const [question, setQuestion] = useState(null);
@@ -56,7 +56,7 @@ const Participate = () => {
     const timerRef = useRef();
 
 
-     // Timer countdown effect
+    // Timer countdown effect
     useEffect(() => {
         if (!quizDetails?.timer?.avail || !quizDetails?.timer?.duration) return;
         if (iscompleted) return;
@@ -92,7 +92,7 @@ const Participate = () => {
 
             } catch (error) {
                 setQuiz({ type: 'load', value: false });
-                console.log(error);
+                ToastMsg({ msg: error.message, type: 'err' });
 
             }
         }
@@ -111,8 +111,8 @@ const Participate = () => {
                     navigate(`/quiz/result/${quizId}`, {});
                     return;
                 }
-                if(data.timeout && !isNaN(new Date(data.timeout).getTime())){
-                    const timeLeft = Math.floor(Math.max(0,new Date(data.timeout).getTime() - Date.now()) / 1000 );
+                if (data.timeout && !isNaN(new Date(data.timeout).getTime())) {
+                    const timeLeft = Math.floor(Math.max(0, new Date(data.timeout).getTime() - Date.now()) / 1000);
                     setTimeLeft(timeLeft);
                 }
                 setCurrent({ type: 'set', id: 'qNo', value: data.qIndex });
@@ -121,7 +121,7 @@ const Participate = () => {
             }
         } catch (error) {
             setCurrent({ type: 'proc', value: false })
-            console.log(error);
+            ToastMsg({ msg: error.message, type: 'err' });
         }
     }
 
@@ -133,8 +133,8 @@ const Participate = () => {
 
         setFadeTransition(false);
         setNextLoading(true)
-        setTimeout(async() => {
-            
+        setTimeout(async () => {
+
             try {
                 const res = await api.get(`/quiz/${quizId}/${qes}`)
 
@@ -149,7 +149,6 @@ const Participate = () => {
                 setNextLoading(false)
                 setCurrent({ type: 'proc', value: false })
                 setFadeTransition(true);
-                console.log(error);
             }
         }, 300);
     }
@@ -175,7 +174,7 @@ const Participate = () => {
             }
         } catch (error) {
             setCurrent({ type: 'proc', value: false })
-            console.log(error);
+            ToastMsg({ msg: error.message, type: 'err' })
         }
     }
 
@@ -186,8 +185,8 @@ const Participate = () => {
                 quizDetails &&
                 <div className='w-full flex flex-col justify-end rounded-md  bg-[var(---color-bg)] px-4 py-6'>
                     <h2 className='w-full text-center text-3xl font-bold'>{quizDetails.title}</h2>
-                    <span className='text-md text-right text-[var(---color-text-xlight)]'> 
-                        <span>Time Duration : </span> 
+                    <span className='text-md text-right text-[var(---color-text-xlight)]'>
+                        <span>Time Duration : </span>
                         <GetTime duration={quizDetails.timer.duration} sec={true} />
                     </span>
                     {quizDetails.timer?.avail && (
@@ -199,46 +198,46 @@ const Participate = () => {
                     )}
                 </div>
             }
-            {iscompleted ? 
+            {iscompleted ?
                 <div className='text-center font-semibold text-[var(---color-text-light)]'>Redirecting to Result ...</div>
                 :
                 question ?
-                <div className='mt-10 w-full flex flex-col justify-start rounded-md  bg-[var(---color-bg)] px-4 py-6'>
-                    
-                    <div className={`flex items-center justify-between font-medium ${fadeTransition ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-                        <h3 className='text-xl text-[var(---color-text-light)]'>Question: {qNo} of {quizDetails.totalQuestions} </h3>
-                        {/* <span className='text-md text-right text-[var(---color-text-xlight)]'> 00:40</span> */}
-                    </div>
-                    <h3 className='mt-5 text-lg text-center font-semibold'>{question.quest}</h3>
-                    <div className={`relative mt-5 text-center flex flex-col gap-3 `}>
-                        {
-                            question.options?.map((opt) => {
-                                return (
-                                    <div onClick={() => {!processing && submitAnswer(opt.id)}} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
-                                        transition-colors duration-300 cursor-pointer  ${(processing || nextloading )&& 'opacity-10'}
+                    <div className='mt-10 w-full flex flex-col justify-start rounded-md  bg-[var(---color-bg)] px-4 py-6'>
+
+                        <div className={`flex items-center justify-between font-medium ${fadeTransition ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+                            <h3 className='text-xl text-[var(---color-text-light)]'>Question: {qNo} of {quizDetails.totalQuestions} </h3>
+                            {/* <span className='text-md text-right text-[var(---color-text-xlight)]'> 00:40</span> */}
+                        </div>
+                        <h3 className='mt-5 text-lg text-center font-semibold'>{question.quest}</h3>
+                        <div className={`relative mt-5 text-center flex flex-col gap-3 `}>
+                            {
+                                question.options?.map((opt) => {
+                                    return (
+                                        <div onClick={() => { !processing && submitAnswer(opt.id) }} key={opt.id} className={`px-1 py-2 text-md border-2 rounded-sm  hover:border-[var(--border-hover)] 
+                                        transition-colors duration-300 cursor-pointer  ${(processing || nextloading) && 'opacity-10'}
                                         ${ans === opt.id ? 'border-[var(--border-selected)]' : 'border-[var(--border-default)]'}`}>
-                                        <p>{opt.option}</p>
-                                    </div>
-                                )
-                            })
-                        }
-                        { (processing||nextloading) &&
-                            <div className='absolute top-0 left-0 w-full h-full '>
-                                <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
-                                {processing && <p className='text-sm text-[var(---color-text-light)]'>Saving Response ...</p>}
-                                {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching next ....</p>}
-                            </div> 
-                        }  
+                                            <p>{opt.option}</p>
+                                        </div>
+                                    )
+                                })
+                            }
+                            {(processing || nextloading) &&
+                                <div className='absolute top-0 left-0 w-full h-full '>
+                                    <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                                    {processing && <p className='text-sm text-[var(---color-text-light)]'>Saving Response ...</p>}
+                                    {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching next ....</p>}
+                                </div>
+                            }
+                        </div>
+
+
+                    </div> :
+                    (processing || nextloading) &&
+                    <div className='w-full '>
+                        <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
+                        {processing && <p className='text-center text-sm text-[var(---color-text-light)]'>fetching progress state ...</p>}
+                        {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching quiz ....</p>}
                     </div>
-                            
-               
-                </div> :
-                (processing || nextloading) && 
-                <div className='w-full '>
-                    <div className='mt-10 w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin mx-auto'></div>
-                    {processing && <p className='text-center text-sm text-[var(---color-text-light)]'>fetching progress state ...</p>}
-                    {nextloading && <p className='text-center text-sm text-[var(---color-text-light)]'>Fetching quiz ....</p>}
-                </div> 
             }
         </div>
     )

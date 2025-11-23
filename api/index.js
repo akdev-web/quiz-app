@@ -10,6 +10,7 @@ import dashboardRoutes from './Routes/User/dashboardRoutes.js'
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/conn.js';
+import errorHandler from './lib/errorHandler.js';
 
 
 
@@ -39,7 +40,7 @@ app.use('/api/dashboard',dashboardRoutes);
 
 
 
-
+app.use(errorHandler);
 app.listen(process.env.PORT, () => {
     return console.log(`Server is listening on PORT : ${process.env.PORT}`);
 })

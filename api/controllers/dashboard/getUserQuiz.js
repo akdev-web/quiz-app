@@ -1,7 +1,6 @@
 
-import mongoose from 'mongoose';
 import quiz from '../../models/quiz.js';
-export default async function getUserQuiz(req, res) {
+export default async function getUserQuiz(req, res,next) {
     const userId = req.user.id;
 
     try {
@@ -172,7 +171,7 @@ export default async function getUserQuiz(req, res) {
         ]);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({ err: 'Unexpected Error' });
     }
 }

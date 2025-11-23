@@ -1,7 +1,6 @@
 import cloudinary from '../../config/cloudinary.js';
-import connectDB from '../../config/conn.js'
 import Quiz from '../../models/quiz.js'
-export default async function updateQuiz(req, res) {
+export default async function updateQuiz(req, res,next) {
     const {title, description, duration, category, publish, schedule,thumbnail } = req.body;
 
     const Id  = req.quiz._id;
@@ -61,7 +60,7 @@ export default async function updateQuiz(req, res) {
         }
 
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({ err: 'Unexpected Error' });
     }
 }

@@ -1,9 +1,8 @@
 
-import connectDB from '../../config/conn.js';
 import users from '../../models/user.js'
 import { getRefreshToken } from '../../lib/util/tokenGenerator.js';
 import jwt from 'jsonwebtoken';
-export default async function Verify(req, res) {
+export default async function Verify(req, res,next) {
     const {code } = req.body;
     if (!code) {
         return res.status(401).json({ err: 'Invalid Code'});
@@ -15,12 +14,10 @@ export default async function Verify(req, res) {
     if(token){
         try {
             const access = jwt.verify(token,process.env.REFRESH_TOKEN_SECRET);
-            console.log(access);
             if(access?.email){
                 user_access = access;
             }
         } catch (error) {
-            console.log(error);
             return res.status(400).json({err:'Cant process request at this moment . Try after some time !'});
         }
     }
@@ -52,8 +49,8 @@ export default async function Verify(req, res) {
                 httpOnly:true,
                 path:'/',
                 maxAge:15*60*1000,
-                sameSite:'lax',
-                secure:false, 
+                sameSite:  process.env.NODE_ENV === 'PRODUCTION' ? 'none' : 'lax',
+                secure: process.env.NODE_ENV === 'PRODUCTION',
             });
         }   
 
@@ -67,7 +64,7 @@ export default async function Verify(req, res) {
         }
         return res.status(200).json({success:true,msg:'email verified '})
     } catch (error) {
-        console.log(error);
+        next(error);
         res.status(500).json({err:'Unexpected Error '});
     }
 

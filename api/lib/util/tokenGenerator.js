@@ -4,14 +4,14 @@ import bcrypt from 'bcryptjs';
 export async function getLoggedInToken(userId) {
     const id = userId.toString();
     const token = await bcrypt.hash(id, 10);
-    // console.log(token);
+    
     return jwt.sign({ token }, process.env.LOGIN_TOKEN_SECRET, { expiresIn: '30d' });
 }
 
 export async function getAccessToken(userId) {
     const id = userId.toString();
     const token = await bcrypt.hash(id, 10);
-    // console.log(token);
+  
     return jwt.sign({ token }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 

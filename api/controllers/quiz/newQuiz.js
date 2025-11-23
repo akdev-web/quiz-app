@@ -1,7 +1,7 @@
-import connectDB from '../../config/conn.js'
+
 import Quiz from '../../models/quiz.js'
 import {nanoid }from 'nanoid';
-export default async function newQuiz(req,res){
+export default async function newQuiz(req,res,next){
     const new_ = req.body;
 
 
@@ -28,7 +28,7 @@ export default async function newQuiz(req,res){
         }
     
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     } 
 }

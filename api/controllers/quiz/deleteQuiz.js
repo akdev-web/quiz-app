@@ -3,7 +3,7 @@ import Question from '../../models/question.js'
 import Answer from '../../models/answer.js'
 import cloudinary from '../../config/cloudinary.js'
 
-export default async function deleteQuiz(req,res) {
+export default async function deleteQuiz(req,res,next) {
     const {user,quiz} = req;
     try {
         // Delete quiz thumbnail from Cloudinary if exists
@@ -18,7 +18,7 @@ export default async function deleteQuiz(req,res) {
         const deleted = await Quiz.findByIdAndDelete(quiz._id);
         return res.status(200).json({success:true,msg:'Quiz, thumbnail, and all related questions/answers deleted successfully!'});
     } catch (error) {
-        console.log(error);
+        next(error);
         res.status(500).json({err:'Unexpected Error'});
     }
 }

@@ -30,7 +30,6 @@ export default async function SendVeificationMail(sendto) {
 
         return {info:info.messageId,code:verfcode};
     } catch (error) {
-        console.log(error);
         return new Error(error);
     }
 }

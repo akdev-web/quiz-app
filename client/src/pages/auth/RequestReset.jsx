@@ -22,7 +22,6 @@ const RequestReset = () => {
   }
   const [state,dispatch] = useReducer(reducer,intialstate);
   const navigate = useNavigate()
-  console.log(state);
 
   const sendRequest = async (e) => {
     e.preventDefault();
@@ -37,8 +36,7 @@ const RequestReset = () => {
         navigate('/verify')
       }
     } catch (error) {
-      const err = error.response?.data || { err: 'Server error' };
-      dispatch({type:'msg',value:{ type: 'err', msg: err.err || error.message }});
+      dispatch({type:'msg',value:{ type: 'err', msg:error.message }});
       dispatch({type:'conn',value:false});
     }
   };

@@ -50,12 +50,8 @@ const Reset = () => {
         dispatch({ type: 'req', value: false });
       }
     } catch (error) {
-      if (error.response) {
-        let errResponse = error.response?.data?.err || 'Server Error';
-        dispatch({ type: 'msg', value: { type: 'err', msg: errResponse } });
+        dispatch({ type: 'msg', value: { type: 'err', msg: error.message } });
         dispatch({ type: 'req', value: false }); 
-      }
-      console.log(error);
     }
   }
   return (

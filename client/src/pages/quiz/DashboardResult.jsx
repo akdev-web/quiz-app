@@ -34,8 +34,7 @@ const DashboardResult = () => {
           setRanKList(result.rankList);
         }
       } catch (error) {
-        const data = error.response.data;
-        ToastMsg({ type: 'err', msg: data.err || 'Failed to fetch result data' });
+        ToastMsg({ type: 'err', msg: error.message });
       }
     }
 
@@ -49,8 +48,7 @@ const DashboardResult = () => {
           setPagestate({loading:false,error:false,msg:data.msg});
         }
       } catch (error) {
-        const err = error.response?.data?.err || 'Failed to fetch quiz data';
-        setPagestate({loading:false,error:true,msg:err});
+        setPagestate({loading:false,error:true,msg:error.message});
         ToastMsg({ type: 'err', msg: err });
       }
     }
@@ -65,7 +63,6 @@ const DashboardResult = () => {
       const res = await api.get(`dashboard/result/${quizId}`, { params: { user } });
       if (res.data?.success) {
         const data = res.data;
-        console.log(data);
         setResult({
           user: data.result.user,
           summary:null,
@@ -79,8 +76,7 @@ const DashboardResult = () => {
         })
       }
     } catch (error) {
-      const data = error.response.data;
-      console.log(data);
+      ToastMsg({msg:error.message,type:'err'})
     }
   }
 

@@ -9,7 +9,6 @@ const AlertMessage = (message) => {
     default: 'bg-gray-200 text-gray-800',
   }
 
-  console.log(message);
 
   return (
     <p className={`${defaultStyle} ${styles[message.type] || styles.default}`} >

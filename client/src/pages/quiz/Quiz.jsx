@@ -46,12 +46,9 @@ const Quiz = () => {
         }
       } catch (err) {
         setLoading(false)
-        if(err.response?.data){
-          const errRes = err.response.data;
-          if(errRes.loggedout){
+          if(err.data?.loggedout){
             setShowPopup(true);
           }
-        }
       }
     }
 

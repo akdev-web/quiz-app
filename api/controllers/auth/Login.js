@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
-import connectDB from "../../config/conn.js";
 import users from "../../models/user.js";
 import { cookiesOptions, getAccessToken, getLoggedInToken, getUserJwtToken } from "../../lib/util/tokenGenerator.js";
 
-export default async function Login(req,res) {
+export default async function Login(req,res,next) {
     const {email,password} = req.body;
 
     if(!email || !password){
@@ -69,7 +68,7 @@ export default async function Login(req,res) {
         return res.status(200).json({success:true,msg:'Login Successfully',access:useraccess});
         
     } catch (error) {
-        console.log(error);
+        next(error);
         res.status(500).json({err:'Unexpected Error !'});
     }
     

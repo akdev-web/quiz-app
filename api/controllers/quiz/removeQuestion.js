@@ -3,11 +3,10 @@ import Answer from "../../models/answer.js";
 import Question from "../../models/question.js";
 import Quiz from "../../models/quiz.js";
 
-export default async function removeQuestion(req,res) {
+export default async function removeQuestion(req,res,next) {
     const {user} = req;
     const {id,quiz} = req.query;
 
-    console.log(id,quiz);
     try {
         const verify = await Quiz.findOne({quizId:quiz,createdBy:user.id});
         if(!verify) return res.status(403).json({err:'Access Denied'});
@@ -22,6 +21,7 @@ export default async function removeQuestion(req,res) {
         
 
     } catch (error) {
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     }
 }

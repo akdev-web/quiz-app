@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.jsx'
 import ThemeProvider from './context/ThemeContext.jsx'
 import { UserProvider } from './context/UserContext.jsx'
+import { ErrorBoundary } from './components/util/ErrorBoundary.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
-      <UserProvider>
-        <App />
-      </UserProvider>
-    </ThemeProvider>
+    <ErrorBoundary >
+      <ThemeProvider>
+        <UserProvider>
+          <App />
+        </UserProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )

@@ -59,10 +59,10 @@ const Login = () => {
         Login(payload.user,data.access);    
       }
     } catch (error) {
+      console.log(error);
       if(wakingUP) clearTimeout(wakingUP);
-      let res = error.response.data || 'Server Error';
-      if (res.forceVerify) { setRequestverify(true) }
-      setMessage({ type: 'err', msg: res.err });
+      if (error.data?.forceVerify) { setRequestverify(true) }
+      setMessage({ type: 'err', msg: error.message});
       setConnecting(false);
       
     }

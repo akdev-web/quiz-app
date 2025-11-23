@@ -29,7 +29,7 @@ const Result = () => {
         }
       } catch (error) {
         setPageState(prev=>({...prev,fetchingQuiz:false}))
-        ToastMsg({ type: 'err', msg: error.response?.data?.err || 'Failed to fetch quiz data' });
+        ToastMsg({ type: 'err', msg: error.message });
         navigate('/', { replace: true });
       }
     }
@@ -56,9 +56,9 @@ const Result = () => {
       }
     } catch (error) {
       setPageState(prev=>({...prev,fetchingResult:false}))
-      const data = error.response.data;
+      const {data,message }= error;
       if (!data.participated) {
-        navigate(`/quiz/participate/${quizId}`, { state: { alert: { msg: data.err, type: 'err' } } });
+        navigate(`/quiz/participate/${quizId}`, { state: { alert: { msg: message, type: 'err' } } });
       }
     }
   }

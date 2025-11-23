@@ -1,6 +1,6 @@
 import Question from "../../models/question.js";
 
-export default async function getQuestions(req,res) {
+export default async function getQuestions(req,res,next) {
     const quiz = req.quiz;
     const questId = req.params.quest;
     try {
@@ -15,7 +15,7 @@ export default async function getQuestions(req,res) {
             return res.status(200).json({success:true,data:quest});
         }
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     }
 }

@@ -158,9 +158,8 @@ const QuizForm = ({edit, setEdit }) => {
 
             } catch (error) {
                 dispatchFormState({field:'req',value:false})
-                let err = error.message || error.response?.data;
-                dispatchFormState({ field: 'msg', value: { type: 'err', msg: err.err || 'Server Error' } });
-                ToastMsg({ msg: err.err || 'Server Error', type: 'err' })
+                dispatchFormState({ field: 'msg', value: { type: 'err', msg: error.message } });
+                ToastMsg({ msg: error.message, type: 'err' })
             }
         }
     }
@@ -205,10 +204,9 @@ const QuizForm = ({edit, setEdit }) => {
                 dispatchFormState({ field: 'msg', value: { type: 'ok', msg: data.msg } });
                 setEdit(data.data);
             } catch (error) {
-                dispatchFormState({field:'req',value:false})
-                const err = error.response?.data;
-                dispatchFormState({ field: 'msg', value: { type: 'err', msg: err.err || 'Server Error' } });
-                ToastMsg({ msg: err.err || 'Server Error', type: 'err' })
+                dispatchFormState({field:'req',value:false}) 
+                dispatchFormState({ field: 'msg', value: { type: 'err', msg: error.message } });
+                ToastMsg({ msg: error.message, type: 'err' })
             }
         }
     }

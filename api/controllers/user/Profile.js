@@ -1,7 +1,7 @@
 
 import users from "../../models/user.js";
 
-export default async function Profile(req,res) {
+export default async function Profile(req,res,next) {
     const {email,username} = req.user;
 
     try {
@@ -9,7 +9,7 @@ export default async function Profile(req,res) {
         if(!user){return res.status(400).json({err:'cannot process request at this moment !'})};
         return res.status(200).json({success:true,msg:'accessed',user:{username:user.username,email:user.email,profile:user.profile?.url}});
     } catch (err) {
-        console.log(err);
+        next(err)
         return res.status(500).json({err:'Unexpected Error'});
     }
 }

@@ -4,7 +4,7 @@
   "description": "google_auth",
   "main": "index.js",
   "scripts": {
-    "start":"node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo 'No build step required for backend'"
   },
@@ -24,6 +24,7 @@
     "mongoose": "^8.15.1",
     "multer": "^2.0.2",
     "nanoid": "^5.1.5",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "winston": "^3.18.3"
   }
 }

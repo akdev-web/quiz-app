@@ -1,26 +1,23 @@
 
-import connectDB from "../../config/conn.js";
 import SendVeificationMail from "../../lib/SendVerificationMail.js";
 import {  getRefreshToken } from "../../lib/util/tokenGenerator.js";
 import users from "../../models/user.js";
 import jwt from "jsonwebtoken";
 
-export default async function HandleVerifyRequest(req,res) {
+export default async function HandleVerifyRequest(req,res,next) {
     let {email,context} = req.body;
-    console.log(req.body);
     if(!email){
         const token = req.cookies?.refreshToken;
         if(token){
             try {
                 const user = jwt.verify(token,process.env.REFRESH_TOKEN_SECRET);
-                console.log(user);
                 if(user?.email){
                     email = user.email;
                 }else{
                     return res.status(401).json({err:'Invalid Request ! Try again or Resend email'});
                 }
             } catch (error) {
-                console.log(error);
+                next(error)
                 return res.status(401).json({err:'Invalid Request ! Try again or Resend email'});
             }
         }else{
@@ -33,7 +30,6 @@ export default async function HandleVerifyRequest(req,res) {
     }
 
     try {
-        await connectDB();
         const user = await users.findOne({email})
         if(!user){
             return res.status(400).json({err:'Email Not registerd or is invalid'});
@@ -84,15 +80,15 @@ export default async function HandleVerifyRequest(req,res) {
             httpOnly:true,
             path:'/',
             maxAge:30*60*1000,
-            sameSite:'lax',
-            secure:false, 
+            sameSite:  process.env.NODE_ENV === 'PRODUCTION' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'PRODUCTION',
         });
 
         await user.save();
         return res.status(200).json({success:true,msg:' Mail with a verfication code Sent Successfully .'});
         
     } catch (error) {
-        console.log(error);
+        next(error);
         res.status(200).json({err:'Unexpected Error'});
     }
 }

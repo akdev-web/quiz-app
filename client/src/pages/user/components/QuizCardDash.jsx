@@ -30,8 +30,7 @@ const QuizCardDash = ({ quiz, totalParticipants, topParticipants, edit, deleteQu
             if (typeof deleteQuiz === 'function') deleteQuiz(quizId);
             refreshQuizDashboard();
         } catch (err) {
-            console.log(err);
-            alert(err.response?.data?.err || 'Failed to delete quiz');
+            alert(err.message);
         } finally {
             setDeleting(false);
         }

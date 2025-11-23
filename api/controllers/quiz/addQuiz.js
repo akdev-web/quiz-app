@@ -1,6 +1,6 @@
 import question from '../../models/question.js'
 import Quiz from '../../models/quiz.js';
-export default async function addQuiz(req, res) {
+export default async function addQuiz(req, res,next) {
     const { quizId, quiz } = req.body;
     if (!quizId, !quiz) {
         return res.status(400).json({ err: 'quiz detials not available' });
@@ -47,7 +47,7 @@ export default async function addQuiz(req, res) {
         return res.status(200).json({success:true,msg:'questions updated successfully !',data:updated});
 
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({ err: 'Unexpected Error' });
     }
 }

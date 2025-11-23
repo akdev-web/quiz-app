@@ -8,6 +8,7 @@ import CheckAccess from '../Middlewares/CheckAccess.js';
 import ResetPass from '../controllers/auth/ResetPass.js';
 const Router = express.Router();
 
+
 Router.get('/refresh',CheckAccess,Refresh);
 Router.post('/register',Register);
 Router.post('/req/verify',HandleVerifyRequest)

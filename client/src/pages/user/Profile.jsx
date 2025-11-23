@@ -68,10 +68,8 @@ const Profile = () => {
         setSelectedImg(null);
       }
     } catch (err) {
-      const errRes = err.response?.data?.err || 'Unexpected error';
-      ToastMsg({msg:errRes,type:'err'})
+      ToastMsg({msg:err.message,type:'err'})
       setLoading(false);
-      console.log(err)
     }
   };
 

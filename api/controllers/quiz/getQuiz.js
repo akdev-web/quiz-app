@@ -1,6 +1,6 @@
 
 import quiz from '../../models/quiz.js';
-export default async function getQuiz(req,res) {
+export default async function getQuiz(req,res,next) {
     const userId = req.user.id;
 
     try {
@@ -110,7 +110,7 @@ export default async function getQuiz(req,res) {
         ]);
         return res.status(200).json({success:true,data:quizess});
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     }
 }

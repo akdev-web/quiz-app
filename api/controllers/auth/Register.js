@@ -1,12 +1,10 @@
 import { serialize } from "cookie";
-import connectDB from "../../config/conn.js";
 import SendVeificationMail from "../../lib/SendVerificationMail.js";
 import hashPassword from "../../lib/util/hashPassword.js";
 import { getRefreshToken } from "../../lib/util/tokenGenerator.js";
 import users from "../../models/user.js";
 
-export default async function Register(req,res) {
-    console.log(req.body);
+export default async function Register(req,res,next) {
     try {
         const {username,email,password} = req.body;
         if(!username || !email || !password){
@@ -47,7 +45,7 @@ export default async function Register(req,res) {
             return res.status(201).json({success:true,msg:'User Registered ',user:newuser});
         }
     } catch (error) {
-        console.log(error);
+        next(error);
         res.status(500).json({err:'Unexpected Error'});
     }
     

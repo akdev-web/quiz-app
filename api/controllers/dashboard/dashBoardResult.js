@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Answer from "../../models/answer.js";
 
-export default async function dashBoardResult(req, res) {
+export default async function dashBoardResult(req, res,next) {
     const { user, quiz } = req;
     const { quizId } = req.params;
     const { user: queryUser } = req.query;
@@ -220,7 +220,7 @@ export default async function dashBoardResult(req, res) {
         }
     }
     catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({ err: 'Unexpected Error !' });
     }
 }

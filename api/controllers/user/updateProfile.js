@@ -1,6 +1,6 @@
 import cloudinary from "../../config/cloudinary.js";
 import users from "../../models/user.js";
-export default async function updateProfile(req, res) {
+export default async function updateProfile(req, res,next) {
     const { user } = req;
     const { profile, username } = req.body;
     try {
@@ -24,7 +24,7 @@ export default async function updateProfile(req, res) {
         const update = { profile: profile.url, username }
         return res.status(200).json({ success: true, update })
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({ err: 'Unexpected Error' });
     }
 

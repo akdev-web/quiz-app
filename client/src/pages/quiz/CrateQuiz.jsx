@@ -42,8 +42,7 @@ const CreateQuiz = () => {
         }
       } catch (error) {
         setLoading(false)
-        let res = error.response?.data;
-        ToastMsg({ msg: res.err, type: 'err' });
+        ToastMsg({ msg: error.message, type: 'err' });
       }
     }
     getQuestions();
@@ -61,8 +60,7 @@ const CreateQuiz = () => {
         ToastMsg({ type: 'ok', msg: data.msg || 'Question deleted successfully' })
       }
     } catch (error) {
-      const errRes = error.response.data?.err || 'Server Error';
-      ToastMsg({ msg: errRes, type: 'err' })
+      ToastMsg({ msg: error.message, type: 'err' })
     }
   }
 

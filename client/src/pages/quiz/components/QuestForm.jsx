@@ -100,7 +100,6 @@ const QuestForm = forwardRef(({quizDetails,isQuizloaded,quiz,setQuiz,edit,setEdi
     const showOptionsEditor = (e) => {
         const count = parseInt(e.target.value);
         if (!count || isNaN(count)) {
-            console.log('Please select valid Option !');
             setOptions([]);
             return;
         }
@@ -152,7 +151,6 @@ const QuestForm = forwardRef(({quizDetails,isQuizloaded,quiz,setQuiz,edit,setEdi
             }
             return v;
         })
-        console.log(new_quiz);
         setEdit(0);
         resetQuetionEditor();
     }
@@ -176,8 +174,7 @@ const QuestForm = forwardRef(({quizDetails,isQuizloaded,quiz,setQuiz,edit,setEdi
                 manager({ field: 'msg', value: { type: 'ok', msg: data.msg } });
             }
         } catch (error) {
-            const res = error.response?.data;
-            manager({ field: 'msg', value: { type: 'err', msg: res.err || 'Server Error' } });
+            manager({ field: 'msg', value: { type: 'err', msg: message } });
         }
     }
 

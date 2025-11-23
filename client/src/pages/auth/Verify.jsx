@@ -30,7 +30,6 @@ const Verify = () => {
   const [rediret,setRedirect] = useState(null)
   const navigate = useNavigate()
 
-  console.log(message);
   const sendRequest = async () => {
     setState(prev => ({ ...prev, requesting: true }));
     try {
@@ -41,8 +40,7 @@ const Verify = () => {
         setState(prev => ({ ...prev, requesting: false }));
       }
     } catch (error) {
-      const err = error.response?.data || { err: 'Server error' };
-      setMessage({ type: 'err', msg: err.err || error.message });
+      setMessage({ type: 'err', msg: error.message });
       setState(prev => ({ ...prev, requesting: false }));
     }
   };
@@ -61,11 +59,11 @@ const Verify = () => {
         }
       }
     } catch (error) {
-      const err = error.response?.data || { err: 'Server error' };
-      setMessage({ type: 'err', msg: err.err });
+      const {data,message} = error;
+      setMessage({ type: 'err', msg: message });
       setState({ verified: false, requesting: false });
-      if(err.redirect === 'login'){
-          setRedirect(err.redirect);
+      if(data.redirect === 'login'){
+          setRedirect(data.redirect);
       }
     }
   };

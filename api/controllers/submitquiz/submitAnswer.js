@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import answer from '../../models/answer.js';
 import Question from '../../models/question.js'
-export default async function submitAnswer(req, res) {
+export default async function submitAnswer(req, res,next) {
 
     const { user, quiz } = req;
     const { ans, question } = req.body;
@@ -83,7 +83,7 @@ export default async function submitAnswer(req, res) {
             return res.status(200).json({ success: true, msg: 'saved successfully',qIndex,current:nextQuestion})
         }
     } catch (error) {
-        console.log(error);
+        next(error)
         return res.status(500).json({err:'Unexpected Error'});
     }
 

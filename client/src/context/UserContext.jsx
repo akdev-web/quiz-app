@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../components/api";
+import ToastMsg from '../components/util/AlertToast.js';
 
 
 const UserContext = createContext();
@@ -17,8 +18,8 @@ export const UserProvider = ({children}) =>{
                     setauthenticating(false);
                 }
             } catch (error) {
+                ToastMsg({msg:error.message,type:'err'});
                 setauthenticating(false);
-                console.log(error);
             }  
         }
         const access = localStorage.getItem('access_Token'); 

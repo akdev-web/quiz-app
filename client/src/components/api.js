@@ -67,10 +67,10 @@ api.interceptors.response.use(
           failedQueue.push({
             resolve: (token) => {
               originalRequest.headers['Authorization'] = `Bearer ${token}`;
-              resolve(api(originalRequest));
+              resolve(api(originalRequest).catch(err=>{reject(normalizeError(err))}));
             },
             reject: (err) => {
-              reject(err);
+              reject(normalizeError(err));
             },
           });
         });
@@ -87,17 +87,98 @@ api.interceptors.response.use(
 
 
         processQueue(null);
-        return api(originalRequest);
+        return api(originalRequest).catch(err=>{Promise.reject(normalizeError(err))});
       } catch (err) {
-        console.log(err);
         processQueue(err);
-        return Promise.reject(err);
+        return Promise.reject(normalizeError(err));
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(normalizeError(error));
   }
 );
 
+export function normalizeError(error) {
+  // Axios timeout or network unreachable
+  if (error.code === "ECONNABORTED") {
+    return {
+      type: "timeout",
+      status: 0,
+      message: "Request timed out. Please try again.",
+    };
+  }
+
+  if (!error.response) {
+    return {
+      type: "network",
+      status: 0,
+      message: "Network error: Please check your internet connection.",
+    };
+  }
+
+  const { status, data } = error.response;
+
+  // Handle specific status codes
+  let err_response = {status,data};
+  switch (status) {
+    case 400:
+      return {
+        ...err_response,
+        type: "bad_request",
+        message: data?.err || "Bad Request.",
+      };
+
+    case 401:
+      return {
+        ...err_response,
+        type: "unauthorized",
+        message: data?.err || "Unauthorized request !",
+      };
+
+    case 403:
+      return {
+        ...err_response,
+        type: "forbidden",
+        message: data?.err || "You don't have permission to perform this action.",
+      };
+
+    case 404:
+      return {
+        ...err_response,
+        type: "not_found",
+        message: data?.err || "Resource not found.",
+      };
+
+    case 422:
+      return {
+        ...err_response,
+        type: "validation",
+        message: "Validation failed.",
+        errors: data?.err || null,
+      };
+
+    case 429:
+      return {
+        ...err_response,
+        type: "rate_limit",
+        message: data?.err || "Too many requests. Please slow down.",
+      };
+
+    case 500:
+      return {
+        ...err_response,
+        type: "server_error",
+        message:
+          data?.err || "Server error. Please try again later.",
+      };
+
+    default:
+      return {
+        ...err_response,
+        type: "unknown",
+        message: data?.err || "Unexpected error occurred.",
+      };
+  }
+}

@@ -1,7 +1,7 @@
 import answer from "../../models/answer.js";
 import question from "../../models/question.js";
 
-export default async function progress(req,res) {
+export default async function progress(req,res,next) {
     const {user,quiz} = req;
     try {
         const timeNow =  Date.now();
@@ -74,7 +74,7 @@ export default async function progress(req,res) {
         const qIndex = 1;
         return res.status(200).json({success:true,msg:'participated successfully !',data:answers,current,qIndex});
     } catch (error) {
-        console.log(error);
+        next(error);
         return res.status(500).json({err:'Unexpected Error'});
     }
 }
