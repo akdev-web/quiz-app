@@ -40,7 +40,6 @@ const Register = () => {
     setMessage(null)
     try {
       const res = await auth.post('/register', form);
-      console.log(res)
       if (res.data.success) {
         // manageForm({type:'setField',name:'message',value:{type:'ok',msg:res.data.msg}})
         setMessage({ type: 'ok', msg: res.data.msg });
@@ -50,7 +49,7 @@ const Register = () => {
       }
     } catch (error) {
       setConnecting(false)
-      const errdata = error.response.data || 'Server Error';
+      const errdata = error.response?.data || 'Server Error';
       // manageForm({type:'setField',name:'message',value:{type:'err',msg:errdata.err}})
       setMessage({ type: 'err', msg: errdata.err });
     }

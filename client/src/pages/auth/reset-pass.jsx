@@ -55,7 +55,6 @@ const Reset = () => {
         dispatch({ type: 'msg', value: { type: 'err', msg: errResponse } });
         dispatch({ type: 'req', value: false }); 
       }
-      console.log(error);
     }
   }
   return (

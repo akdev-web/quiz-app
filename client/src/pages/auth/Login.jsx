@@ -49,7 +49,7 @@ const Login = () => {
     },2000);
     try {
       const res = await auth.post('/login', form);
-      if (res.data.success) {
+      if (res.data?.success) {
         if(wakingUP) clearTimeout(wakingUP);
         let data = res.data;
         setMessage({ type: 'ok', msg: data.msg })
@@ -60,7 +60,7 @@ const Login = () => {
       }
     } catch (error) {
       if(wakingUP) clearTimeout(wakingUP);
-      let res = error.response.data || 'Server Error';
+      let res = error.response?.data || 'Server Error';
       if (res.forceVerify) { setRequestverify(true) }
       setMessage({ type: 'err', msg: res.err });
       setConnecting(false);

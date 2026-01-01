@@ -417,7 +417,7 @@ const QuizForm = ({edit, setEdit }) => {
                             </div>
                         }
                         {(publishNow === 'schedule') &&
-                            <PublishInput init={quizDetails.schedule} published={edit.published} onUTCChange={(utcTime) => setQuizDetails({ type: 'set', name: 'schedule', value: utcTime })} />
+                            <PublishInput init={quizDetails.schedule} published={edit?.published} onUTCChange={(utcTime) => setQuizDetails({ type: 'set', name: 'schedule', value: utcTime })} />
                         }
                         <div className='w-full mt-5'>
                             <button type="button" className='w-[140px] ml-auto  px-2 py-1 flex gap-2.5 justify-center items-center rounded-full bg-black text-white 

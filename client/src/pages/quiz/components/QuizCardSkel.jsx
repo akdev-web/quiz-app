@@ -19,6 +19,7 @@ const QuizCardSkel = ({ skelton }) => {
     return (
         <div
             className="
+                max-sm:w-full
                 max-sm:max-w-[400px] 
                 max-sm:mx-auto 
                 flex flex-col 

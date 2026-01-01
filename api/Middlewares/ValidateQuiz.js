@@ -14,7 +14,7 @@ export default async function ValidateQuiz(req,res,next){
             req.quiz = quiz;
             next();
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({err:'Unexpected Error'});
         }
 }

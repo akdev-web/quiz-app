@@ -36,7 +36,6 @@ export default async function VerifyUser(req,res,next) {
         
          
     } catch (error) {
-        console.log(error);
         return res.status(500).json({err:'Unexpected Error !'});
     }
     
